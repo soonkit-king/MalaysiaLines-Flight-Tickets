@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FlightTicketingSystem"
         tools:targetApi="31">
         <activity
+            android:name=".activitySeatSelection"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
