@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_book"
+        android:id="@+id/nav_book_flight"
         android:icon="@drawable/flight_ticket"
         android:title="Flights" />
     <item
-        android:id="@+id/nav_history"
+        android:id="@+id/nav_booking_history"
         android:icon="@drawable/bookings"
-        android:title="Your Bookings" />
+        android:title="Bookings" />
 </menu>
