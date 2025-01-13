@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textAlignment="viewEnd">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- First Row: Start and End Airport -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvStartAirport"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kuala Lumpur (KUL)"
+                    android:textSize="@dimen/label_size_small" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    app:srcCompat="@drawable/airplane_straight" />
+
+                <TextView
+                    android:id="@+id/tvEndAirport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kota Bharu (KBD)"
+                    android:textSize="@dimen/label_size_small" />
+            </LinearLayout>
+
+            <!-- Second Row: Departure and Arrival Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:id="@+id/ivClock"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="5dp"
+                    app:srcCompat="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/tvDepartureDatetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="13 Dec 1999"
+                    android:textSize="@dimen/label_size_small" />
+
+                <TextView
+                    android:id="@+id/lblDash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:layout_marginHorizontal="5dp"
+                    android:textSize="@dimen/label_size_small" />
+
+                <TextView
+                    android:id="@+id/tvArrivalDatetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14 Dec 1999"
+                    android:textSize="@dimen/label_size_small" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right Section: Total Info -->
+        <LinearLayout
+            android:id="@+id/LinearLayoutTotal"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:gravity="bottom|end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="99 pax"
+                android:textSize="@dimen/label_size_medium"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

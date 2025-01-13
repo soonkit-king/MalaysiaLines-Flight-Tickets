@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Flight Ticketing System"
+rootProject.name = "MalaysiaLines Flight Tickets"
 include ':app'
