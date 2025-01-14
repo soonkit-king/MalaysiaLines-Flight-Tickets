@@ -105,7 +105,7 @@
                     android:textSize="@dimen/label_size_small" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/tvSeatNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -116,10 +116,9 @@
 
             <!-- Refund Guarantee -->
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/tvRefund"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:text="With Refund Guarantee"
                 android:textSize="@dimen/label_size_small"
                 android:textStyle="bold" />

@@ -1,6 +1,11 @@
 <resources>
-    <color name="colorDarkBlue">#000957</color>
     <color name="colorPrimaryBlue">#344CB7</color>
     <color name="colorAccentYellow">#FFEB00</color>
     <color name="colorSecondaryBlue">#577BC1</color>
+
+    <color name="colorDarkBlue">#000957</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGrey">#545454</color>
+
 </resources>
