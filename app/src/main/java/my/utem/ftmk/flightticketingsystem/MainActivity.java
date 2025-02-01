@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);uuu
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         // Set default fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.nav_host_fragment, new BookFlight())
-                .commit();
+                .commit(); hiuhi 
 
         // Handle navigation item clicks
         bottomNavigationView.setOnItemSelectedListener(item -> {
