@@ -54,7 +54,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
                 startActivity(new Intent(PaymentValidationActivity.this, BookingSuccessActivity.class));
                 finish();
             }
-        }, 5000); // 3000ms = 3 seconds
+        }, 3000); // 3000ms = 3 seconds
     }
 
     private void animateDot(ImageView dot) {
