@@ -1,6 +1,8 @@
 package my.utem.ftmk.flightticketingsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +22,13 @@ public class BookingSuccessActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button backToMenuButton = findViewById(R.id.backToMenuButton);
+        backToMenuButton.setOnClickListener(v -> {
+            Intent i = new Intent(BookingSuccessActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        });
+
     }
 }
