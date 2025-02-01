@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
         // Set default fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.nav_host_fragment, new BookFlight())
-                .commit(); hiuhi 
+                .commit();
 
-        // Handle navigation item clicks
+        // Handle navigation item clicks fgyujihgf89
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 
