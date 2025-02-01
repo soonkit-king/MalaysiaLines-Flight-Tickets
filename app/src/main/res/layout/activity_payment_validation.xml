@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="16dp">
+
+    <!-- Rectangle Background -->
+    <RelativeLayout
+        android:id="@+id/validationRectangle"
+        android:gravity="center"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rectangle_background"
+        android:padding="16dp">
+
+        <!-- Three Dots -->
+        <ImageView
+            android:id="@+id/dot1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/dot"
+            app:tint="@color/blue" />
+
+        <ImageView
+            android:id="@+id/dot2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/dot1"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/dot"
+            app:tint="@color/blue" />
+
+        <ImageView
+            android:id="@+id/dot3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/dot2"
+            android:src="@drawable/dot"
+            app:tint="@color/blue" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
