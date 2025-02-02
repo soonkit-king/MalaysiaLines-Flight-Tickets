@@ -1,11 +1,13 @@
 <resources>
-    <color name="colorPrimaryBlue">#344CB7</color>
-    <color name="colorAccentYellow">#FFEB00</color>
-    <color name="colorSecondaryBlue">#577BC1</color>
+    <color name="primaryBlue">#344CB7</color>
+    <color name="accentYellow">#FFEB00</color>
+    <color name="secondaryBlue">#577BC1</color>
 
-    <color name="colorDarkBlue">#000957</color>
-    <color name="colorWhite">#FFFFFF</color>
-    <color name="colorBlack">#000000</color>
-    <color name="colorGrey">#545454</color>
+    <color name="darkBlue">#000957</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#545454</color>
+    <color name="green">#8BC34A</color>
+    <color name="red">#F44336</color>
 
 </resources>

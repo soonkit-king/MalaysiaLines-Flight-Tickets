@@ -44,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        Intent i = new Intent(this, activitySeatSelection.class);
-        startActivity(i);
+//        Intent i = new Intent(this, activitySeatSelection.class);
+//        startActivity(i);
+        // This is seat selectin page
 
     }
 }
