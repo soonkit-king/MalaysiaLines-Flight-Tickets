@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- Flight Info -->
+    <TextView
+        android:id="@+id/flightInf0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Flight Info"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"/>
+
+    <!-- Select Date -->
+    <Button
+        android:id="@+id/dateButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Date" />
+
+    <!-- Select Passengers -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Number of Passengers"
+        android:textSize="16sp"
+        android:paddingTop="10dp"/>
+
+    <NumberPicker
+        android:id="@+id/passengerPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Confirm Booking -->
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Booking"
+        android:backgroundTint="#EB7A2FC8"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

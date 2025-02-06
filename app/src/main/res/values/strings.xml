@@ -2,4 +2,13 @@
     <string name="app_name">Flight Ticketing System</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="required_field">*Required field</string>
+    <string name="phone_number_hint">Phone number *</string>
+
+
+
+
+
 </resources>
