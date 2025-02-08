@@ -2,6 +2,7 @@ package adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import model.Flight;
+import my.utem.ftmk.flightticketingsystem.AddOnActivity;
+import my.utem.ftmk.flightticketingsystem.MainActivity;
+import my.utem.ftmk.flightticketingsystem.PassengerDetails;
 import my.utem.ftmk.flightticketingsystem.R;
 
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
@@ -40,8 +44,8 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
     @Override
     public void onBindViewHolder(@NonNull FlightViewHolder holder, int position) {
         Flight flight = flightList.get(position);
-        holder.tvDepartureAirport.setText(flight.getFromTo());
-        holder.tvArrivalAirport.setText(flight.getGoTo());
+        holder.tvDepartureAirport.setText(flight.getDepartureAirport());
+        holder.tvArrivalAirport.setText(flight.getArrivalAirport());
         holder.tvArrivalTime.setText(flight.getTimeArrive());
         holder.tvDepartureTime.setText(flight.getTimeDepart());
         holder.tvPriceRate.setText(flight.getPrice());
@@ -86,7 +90,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         Button confirmButton = dialogView.findViewById(R.id.confirmButton);
 
         // Set Flight Info
-        flightInfo.setText(flight.getFromTo() + "→" + flight.getGoTo() + "\n" + flight.getTimeDepart() + "→" + flight.getTimeArrive() + "\n" + flight.getPrice());
+        flightInfo.setText(flight.getDepartureAirport() + "→" + flight.getArrivalAirport() + "\n" + flight.getTimeDepart() + "→" + flight.getTimeArrive() + "\n" + flight.getPrice());
 
         // Set Number Picker (1 - 10 passengers)
         passengerPicker.setMinValue(1);
@@ -114,14 +118,21 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
             if (selectedDate[0].isEmpty()) {
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context,
-                        "Flight booked!\n" + flight.getFromTo() +
-                                "\nDate: " + selectedDate[0] +
-                                "\nPassengers: " + selectedPassengers,
-                        Toast.LENGTH_LONG).show();
+                // Create Intent to navigate to AddOnActivity
+                Intent intent = new Intent(context, PassengerDetails.class);
+                intent.putExtra("flight_depart", flight.getDepartureAirport());
+                intent.putExtra("flight_arive", flight.getArrivalAirport());
+                intent.putExtra("flight_date", selectedDate[0]);
+                intent.putExtra("passengers", selectedPassengers);
+                intent.putExtra("departure_time", flight.getTimeDepart());
+                intent.putExtra("arrival_time", flight.getTimeArrive());
+                intent.putExtra("price", flight.getPrice());
+
+                context.startActivity(intent);
                 dialog.dismiss();
             }
         });
+
 
         dialog.show();
     }
