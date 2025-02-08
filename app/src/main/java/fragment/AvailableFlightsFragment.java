@@ -1,4 +1,4 @@
-package my.utem.ftmk.flightticketingsystem;
+package fragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -12,6 +12,7 @@ import java.util.List;
 
 import adapter.FlightAdapter;
 import model.Flight;
+import my.utem.ftmk.flightticketingsystem.R;
 
 public class AvailableFlightsFragment extends Fragment {
 
@@ -22,7 +23,7 @@ public class AvailableFlightsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragmen_available_flights, container, false);
+        View view = inflater.inflate(R.layout.fragment_available_flights, container, false);
 
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.rvFlights);

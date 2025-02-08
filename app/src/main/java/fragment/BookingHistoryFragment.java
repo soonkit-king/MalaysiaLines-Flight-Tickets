@@ -1,4 +1,4 @@
-package my.utem.ftmk.flightticketingsystem;
+package fragment;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
@@ -19,6 +19,7 @@ import java.util.List;
 import SQLite.DatabaseHelper;
 import adapter.BookingAdapter;
 import model.Booking;
+import my.utem.ftmk.flightticketingsystem.R;
 
 public class BookingHistoryFragment extends Fragment {
 

@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import fragment.AvailableFlightsFragment;
+import fragment.BookingHistoryFragment;
+
 public class MainActivity extends AppCompatActivity {
     
     @Override
