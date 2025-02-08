@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Passenger_Details extends AppCompatActivity {
+public class Passenger_Details_Card extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
     private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
@@ -30,7 +30,7 @@ public class Passenger_Details extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_passenger_details);
+        setContentView(R.layout.activity_passenger_details_card);
 
         // Get pax from the intent that opened this activity
         pax = getIntent().getIntExtra("pax", 1);
@@ -48,13 +48,13 @@ public class Passenger_Details extends AppCompatActivity {
         phoneNumberErrorTextView = findViewById(R.id.phone_number_error);
         countryCodeSpinner = findViewById(R.id.country_code);
 
-        closeButton = findViewById(R.id.close_button);
+       /* closeButton = findViewById(R.id.close_button);
         closeButton.setOnClickListener(v -> showConfirmationDialog());
         setupCountryCodeSpinner();
         nextButton = findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> validateAndMoveToNextScreen());
         //paxTextView = findViewById(R.id.text_pax);
-       // paxTextView.setText(pax + " pax");
+       // paxTextView.setText(pax + " pax");*/
 
 
 
