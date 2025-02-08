@@ -151,7 +151,7 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSelect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
