@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import fragment.AddOnFragment;
+
 public class PassengerDetailsCard extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
@@ -168,7 +170,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
             // Implement moving to the add-on screen or any other logic here
             //Example: Replace the current activity with the next activity
 
-            Intent intent = new Intent(this, AddOnActivity.class);
+            Intent intent = new Intent(this, AddOnFragment.class);
             startActivity(intent);
         }
         else {

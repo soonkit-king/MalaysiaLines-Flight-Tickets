@@ -13,7 +13,7 @@
         android:theme="@style/Theme.FlightTicketingSystem"
         tools:targetApi="31">
         <activity
-            android:name=".PassengerDetailsActivity"
+            android:name="fragment.CustomerDetailsFragment"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
