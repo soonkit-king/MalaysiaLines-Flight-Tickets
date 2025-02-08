@@ -1,0 +1,11 @@
+<resources>
+    <string-array name="country_code">
+        <item>+1 (USA)</item>
+        <item>+44 (UK)</item>
+        <item>+91 (India)</item>
+        <item>+60 (Malaysia)</item>
+        <item>+61 (Australia)</item>
+        <item>+81 (Japan)</item>
+        <item>+86 (China)</item>
+    </string-array>
+</resources>
