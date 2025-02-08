@@ -7,8 +7,10 @@
     <string name="required_field">*Required field</string>
     <string name="phone_number_hint">Phone number *</string>
 
-
-
-
+    <string name="first_name">First name *</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="gender">Gender *</string>
+    <string name="passenger_details_must_match_passport">Passenger details must match passport</string>
 
 </resources>
