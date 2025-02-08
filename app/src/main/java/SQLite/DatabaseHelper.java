@@ -71,36 +71,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // CRUD operations for flight
-    public boolean insertFlight(String departure, String arrival, String depTime, String arrTime, String duration, double price) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("departure_airport", departure);
-        values.put("arrival_airport", arrival);
-        values.put("departure_time", depTime);
-        values.put("arrival_time", arrTime);
-        values.put("flight_duration", duration);
-        values.put("price_rate", price);
-        long result = db.insert("flight", null, values);
-        return result != -1;
-    }
-
     public Cursor getFlights() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM flight", null);
-    }
-
-    public boolean updateFlight(int id, String departure, String arrival, String depTime, String arrTime, String duration, double price) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("departure_airport", departure);
-        values.put("arrival_airport", arrival);
-        values.put("departure_time", depTime);
-        values.put("arrival_time", arrTime);
-        values.put("flight_duration", duration);
-        values.put("price_rate", price);
-        int result = db.update("flight", values, "flight_id=?", new String[]{String.valueOf(id)});
-        return result > 0;
     }
 
     public boolean deleteFlight(int id) {

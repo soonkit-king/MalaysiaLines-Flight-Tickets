@@ -1,64 +1,98 @@
 package my.utem.ftmk.flightticketingsystem;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookingHistory#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList; // Import ArrayList
+import java.util.List;
+
+import SQLite.DatabaseHelper;
+import adapter.BookingAdapter;
+import model.Booking;
+
 public class BookingHistory extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public BookingHistory() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookingHistory.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BookingHistory newInstance(String param1, String param2) {
-        BookingHistory fragment = new BookingHistory();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private DatabaseHelper db;
+    private RecyclerView rvBooking;
+    private List<Booking> bookingList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        db = new DatabaseHelper(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_booking_history, container, false);
+        View view = inflater.inflate(R.layout.fragment_booking_history, container, false);
+
+        rvBooking = view.findViewById(R.id.rvBookings);
+        rvBooking.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        loadBookingHistory(); // Load booking history
+
+        // Set up the adapter after loading the booking history
+        BookingAdapter bookingAdapter = new BookingAdapter(getActivity(), bookingList);
+        rvBooking.setAdapter(bookingAdapter); // Use rvBooking instead of recyclerView
+
+        return view;
+    }
+
+    private void loadBookingHistory() {
+        Cursor cursor = db.getBookings();
+        bookingList = new ArrayList<>(); // Initialize the bookingList
+
+        if (cursor != null) {
+            // Print out the column names for debugging
+            String[] columnNames = cursor.getColumnNames();
+            for (String columnName : columnNames) {
+                Log.d("BookingHistory", "Column: " + columnName);
+            }
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // Extract data from the cursor
+                    @SuppressLint("Range") String departureDatetime = cursor.getString(cursor.getColumnIndex("departure_datetime")); // Correct column name
+                    @SuppressLint("Range") String arrivalDatetime = cursor.getString(cursor.getColumnIndex("arrival_datetime")); // Correct column name
+                    @SuppressLint("Range") String seatNo = cursor.getString(cursor.getColumnIndex("seat_no")); // Correct column name
+                    @SuppressLint("Range") boolean hasRefundGuarantee = cursor.getInt(cursor.getColumnIndex("refund_guarantee")) > 0; // Correct column name
+                    @SuppressLint("Range") int pax = cursor.getInt(cursor.getColumnIndex("pax")); // Correct column name
+                    @SuppressLint("Range") double totalPayment = cursor.getDouble(cursor.getColumnIndex("total_payment")); // Correct column name
+
+                    // Check if any column index is -1
+                    if (departureDatetime == null || arrivalDatetime == null || seatNo == null) {
+                        Log.e("BookingHistory", "One of the required fields is null");
+                        continue; // Skip this entry if any required field is null
+                    }
+
+                    // Create a new Booking object
+                    @SuppressLint("Range") Booking booking = new Booking(
+                            cursor.getString(cursor.getColumnIndex("departure_airport")), // You may need to join with flight table to get this
+                            cursor.getString(cursor.getColumnIndex("arrival_airport")), // You may need to join with flight table to get this
+                            departureDatetime,
+                            arrivalDatetime,
+                            seatNo,
+                            hasRefundGuarantee,
+                            pax,
+                            totalPayment
+                    );
+                    bookingList.add(booking);
+                } while (cursor.moveToNext());
+
+                cursor.close(); // Close the cursor after use
+            }
+        }
     }
 }

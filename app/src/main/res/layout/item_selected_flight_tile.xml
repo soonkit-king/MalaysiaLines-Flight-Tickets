@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:textAlignment="viewEnd">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingStart="20dp"
         android:paddingTop="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        >
 
+        <!-- Left Section: Total Info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Kuala Lumpur (KUL)"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/label_size_small" />
 
                 <ImageView
@@ -49,6 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kota Bharu (KBD)"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/label_size_small" />
             </LinearLayout>
 
@@ -58,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
+                android:textColor="@color/black">
 
                 <ImageView
                     android:id="@+id/ivClock"
@@ -72,6 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="13 Dec 1999"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/label_size_small" />
 
                 <TextView
@@ -79,6 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="-"
+                    android:textColor="@color/black"
                     android:layout_marginHorizontal="5dp"
                     android:textSize="@dimen/label_size_small" />
 
@@ -87,6 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="14 Dec 1999"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/label_size_small" />
             </LinearLayout>
 
@@ -111,4 +120,8 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"/>
+</LinearLayout>

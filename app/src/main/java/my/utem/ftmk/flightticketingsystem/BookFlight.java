@@ -19,17 +19,13 @@ public class BookFlight extends Fragment {
     FlightAdapter flightAdapter;
     private List<Flight> flightList;
 
-    public BookFlight() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_flight, container, false);
 
         // Initialize RecyclerView
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.rvFlights);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Load Flights
