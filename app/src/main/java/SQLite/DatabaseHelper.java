@@ -3,39 +3,14 @@ package SQLite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "MalaysiaLines.db";
+    private static final String DATABASE_NAME = "flight_booking.db";
     private static final int DATABASE_VERSION = 1;
-
-    // Table Names
-    private static final String TABLE_CONTACTS = "contacts";
-    private static final String TABLE_PASSENGERS = "passengers";
-    private static final String TABLE_REFUND = "refund_guarantee";
-
-    // Common Columns
-    private static final String COLUMN_ID = "id";
-
-    // Contacts Table Columns
-    private static final String COLUMN_FIRST_NAME = "first_name";
-    private static final String COLUMN_LAST_NAME = "last_name";
-    private static final String COLUMN_EMAIL = "email";
-    private static final String COLUMN_COUNTRY = "country";
-    private static final String COLUMN_PHONE = "phone";
-
-    // Passengers Table Columns
-    private static final String COLUMN_GENDER = "gender";
-    private static final String COLUMN_DOB = "dob";
-    private static final String COLUMN_NATIONALITY = "nationality";
-    private static final String COLUMN_COUNTRY_ISSUE = "country_issue";
-    private static final String COLUMN_PASSPORT_NUMBER = "passport_number";
-    private static final String COLUMN_PASSPORT_EXPIRY = "passport_expiry";
-
-    // Refund Guarantee Table Columns
-    private static final String COLUMN_REFUND_STATUS = "refund_status"; // True/False
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,58 +18,116 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createContactsTable = "CREATE TABLE " + TABLE_CONTACTS + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_FIRST_NAME + " TEXT, " +
-                COLUMN_LAST_NAME + " TEXT, " +
-                COLUMN_EMAIL + " TEXT, " +
-                COLUMN_COUNTRY + " TEXT, " +
-                COLUMN_PHONE + " TEXT)";
+        db.execSQL("CREATE TABLE flight (" +
+                "flight_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "departure_airport TEXT, " +
+                "arrival_airport TEXT, " +
+                "departure_time TEXT, " +
+                "arrival_time TEXT, " +
+                "flight_duration TEXT, " +
+                "price_rate REAL)");
 
-        String createPassengersTable = "CREATE TABLE " + TABLE_PASSENGERS + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_GENDER + " TEXT, " +
-                COLUMN_FIRST_NAME + " TEXT, " +
-                COLUMN_LAST_NAME + " TEXT, " +
-                COLUMN_DOB + " TEXT, " +
-                COLUMN_NATIONALITY + " TEXT, " +
-                COLUMN_COUNTRY_ISSUE + " TEXT, " +
-                COLUMN_PASSPORT_NUMBER + " TEXT, " +
-                COLUMN_PASSPORT_EXPIRY + " TEXT);";
+        db.execSQL("CREATE TABLE booking (" +
+                "booking_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "flight_id INTEGER, " +
+                "pax INTEGER, " +
+                "departure_datetime TEXT, " +
+                "arrival_datetime TEXT, " +
+                "seat_no TEXT, " +
+                "refund_guarantee INTEGER, " +
+                "total_payment REAL, " +
+                "FOREIGN KEY(flight_id) REFERENCES flight(flight_id))");
 
-        String createRefundTable = "CREATE TABLE " + TABLE_REFUND + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_REFUND_STATUS + " BOOLEAN)";
+        db.execSQL("CREATE TABLE contact (" +
+                "contact_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "booking_id INTEGER, " +
+                "first_name TEXT, " +
+                "last_name TEXT, " +
+                "email TEXT, " +
+                "residence_country TEXT, " +
+                "country_code TEXT, " +
+                "phone_number TEXT, " +
+                "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
 
-        db.execSQL(createContactsTable);
-        db.execSQL(createPassengersTable);
-        db.execSQL(createRefundTable);
+        db.execSQL("CREATE TABLE passenger (" +
+                "passenger_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "booking_id INTEGER, " +
+                "first_name TEXT, " +
+                "last_name TEXT, " +
+                "date_of_birth TEXT, " +
+                "nationality TEXT, " +
+                "issue_country TEXT, " +
+                "passport_number TEXT, " +
+                "passport_expiry_date TEXT, " +
+                "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PASSENGERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REFUND);
+        db.execSQL("DROP TABLE IF EXISTS flight");
+        db.execSQL("DROP TABLE IF EXISTS booking");
+        db.execSQL("DROP TABLE IF EXISTS contact");
+        db.execSQL("DROP TABLE IF EXISTS passenger");
         onCreate(db);
     }
 
-    public boolean insertRefundGuarantee(boolean refundStatus) {
+    // CRUD operations for flight
+    public boolean insertFlight(String departure, String arrival, String depTime, String arrTime, String duration, double price) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_REFUND_STATUS, refundStatus);
-        long result = db.insert(TABLE_REFUND, null, values);
+        values.put("departure_airport", departure);
+        values.put("arrival_airport", arrival);
+        values.put("departure_time", depTime);
+        values.put("arrival_time", arrTime);
+        values.put("flight_duration", duration);
+        values.put("price_rate", price);
+        long result = db.insert("flight", null, values);
         return result != -1;
     }
 
-    public boolean getRefundStatus(int id) {
+    public Cursor getFlights() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_REFUND, new String[]{COLUMN_REFUND_STATUS}, COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            boolean status = cursor.getInt(0) > 0;
-            cursor.close();
-            return status;
-        }
-        return false;
+        return db.rawQuery("SELECT * FROM flight", null);
     }
+
+    public boolean updateFlight(int id, String departure, String arrival, String depTime, String arrTime, String duration, double price) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("departure_airport", departure);
+        values.put("arrival_airport", arrival);
+        values.put("departure_time", depTime);
+        values.put("arrival_time", arrTime);
+        values.put("flight_duration", duration);
+        values.put("price_rate", price);
+        int result = db.update("flight", values, "flight_id=?", new String[]{String.valueOf(id)});
+        return result > 0;
+    }
+
+    public boolean deleteFlight(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete("flight", "flight_id=?", new String[]{String.valueOf(id)});
+        return result > 0;
+    }
+
+    // CRUD operations for booking
+    public boolean insertBooking(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("flight_id", flightId);
+        values.put("pax", pax);
+        values.put("departure_datetime", depDatetime);
+        values.put("arrival_datetime", arrDatetime);
+        values.put("seat_no", seatNo);
+        values.put("refund_guarantee", refund);
+        values.put("total_payment", payment);
+        long result = db.insert("booking", null, values);
+        return result != -1;
+    }
+
+    public Cursor getBookings() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM booking", null);
+    }
+
+    // CRUD operations for contact and passenger follow the same pattern
 }
