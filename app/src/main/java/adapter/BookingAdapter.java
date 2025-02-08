@@ -4,14 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import model.Booking;
@@ -30,7 +27,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
     @NonNull
     @Override
     public BookingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_booking_tile, parent, false); // Replace with your booking item layout
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_booking_history, parent, false); // Replace with your booking item layout
         return new BookingViewHolder(view);
     }
 

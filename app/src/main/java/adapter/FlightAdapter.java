@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import model.Flight;
-import my.utem.ftmk.flightticketingsystem.AddOnActivity;
-import my.utem.ftmk.flightticketingsystem.MainActivity;
-import my.utem.ftmk.flightticketingsystem.PassengerDetails;
+import my.utem.ftmk.flightticketingsystem.PassengerDetailsActivity;
 import my.utem.ftmk.flightticketingsystem.R;
 
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
@@ -37,7 +34,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
     @NonNull
     @Override
     public FlightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_available_flight_tile, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_available_flight, parent, false);
         return new FlightViewHolder(view);
     }
 
@@ -119,7 +116,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
                 // Create Intent to navigate to AddOnActivity
-                Intent intent = new Intent(context, PassengerDetails.class);
+                Intent intent = new Intent(context, PassengerDetailsActivity.class);
                 intent.putExtra("flight_depart", flight.getDepartureAirport());
                 intent.putExtra("flight_arive", flight.getArrivalAirport());
                 intent.putExtra("flight_date", selectedDate[0]);

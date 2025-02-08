@@ -20,7 +20,7 @@ import SQLite.DatabaseHelper;
 import adapter.BookingAdapter;
 import model.Booking;
 
-public class BookingHistory extends Fragment {
+public class BookingHistoryFragment extends Fragment {
 
     private DatabaseHelper db;
     private RecyclerView rvBooking;
