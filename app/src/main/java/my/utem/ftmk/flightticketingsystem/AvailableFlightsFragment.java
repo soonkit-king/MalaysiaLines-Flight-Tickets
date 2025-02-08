@@ -13,7 +13,7 @@ import java.util.List;
 import adapter.FlightAdapter;
 import model.Flight;
 
-public class BookFlight extends Fragment {
+public class AvailableFlightsFragment extends Fragment {
 
     RecyclerView recyclerView;
     FlightAdapter flightAdapter;
@@ -22,7 +22,7 @@ public class BookFlight extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_book_flight, container, false);
+        View view = inflater.inflate(R.layout.fragmen_available_flights, container, false);
 
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.rvFlights);

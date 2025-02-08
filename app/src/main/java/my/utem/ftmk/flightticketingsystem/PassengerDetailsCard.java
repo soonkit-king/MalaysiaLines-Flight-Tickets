@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Passenger_Details_Card extends AppCompatActivity {
+public class PassengerDetailsCard extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
     private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
@@ -30,7 +30,7 @@ public class Passenger_Details_Card extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_passenger_details_card);
+        setContentView(R.layout.card_passenger_details);
 
         // Get pax from the intent that opened this activity
         pax = getIntent().getIntExtra("pax", 1);

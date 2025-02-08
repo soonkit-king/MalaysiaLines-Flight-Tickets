@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default fragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, new BookFlight())
+                .replace(R.id.nav_host_fragment, new AvailableFlightsFragment())
                 .commit();
         
         // Handle navigation item clicks
@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
             Fragment selectedFragment = null;
 
             if (item.getItemId() == R.id.nav_book_flight) {
-                selectedFragment = new BookFlight();
+                selectedFragment = new AvailableFlightsFragment();
             } else if (item.getItemId() == R.id.nav_booking_history) {
-                selectedFragment = new BookingHistory();
+                selectedFragment = new BookingHistoryFragment();
             }
 
             if (selectedFragment != null) {

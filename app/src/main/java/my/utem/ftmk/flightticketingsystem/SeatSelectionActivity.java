@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class activitySeatSelection extends AppCompatActivity {
+public class SeatSelectionActivity extends AppCompatActivity {
 
     private int rows = 34; // Example row count (admin-defined)
     private int seatsPerSide = 3; // Number of seats per side
