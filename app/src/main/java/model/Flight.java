@@ -6,10 +6,10 @@ public class Flight {
     private String departureTime;
     private String arrivalTime;
     private String duration;
-    private String priceRate;
+    private double priceRate;
 
     // Constructor (optional, but recommended)
-    public Flight(String departureAirport, String arrivalAirport, String departureTime, String arrivalTime, String duration, String priceRate) {
+    public Flight(String departureAirport, String arrivalAirport, String departureTime, String arrivalTime, String duration, double priceRate) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
@@ -39,7 +39,7 @@ public class Flight {
         return duration;
     }
 
-    public String getPriceRate() {
+    public double getPriceRate() {
         return priceRate;
     }
 
@@ -64,7 +64,7 @@ public class Flight {
         this.duration = duration;
     }
 
-    public void setPriceRate(String priceRate) {
+    public void setPriceRate(double priceRate) {
         this.priceRate = priceRate;
     }
 }

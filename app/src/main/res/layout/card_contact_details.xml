@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:padding="16dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp">
-    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="18dp">
 
         <!-- Title -->
         <TextView
@@ -50,8 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="First name *"
+            android:textSize="16sp"
             android:inputType="textPersonName"
-            android:background="@android:drawable/edit_text"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -70,8 +69,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Last name *"
+            android:textSize="16sp"
             android:inputType="textPersonName"
-            android:background="@android:drawable/edit_text"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -90,8 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email *"
+            android:textSize="16sp"
             android:inputType="textEmailAddress"
-            android:background="@android:drawable/edit_text"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -109,9 +108,9 @@
             android:id="@+id/country_residence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Country/Region of residence"
+            android:hint="Country/Region of residence *"
+            android:textSize="16sp"
             android:inputType="text"
-            android:background="@android:drawable/edit_text"
             android:layout_marginBottom="16dp" />
 
         <!-- Phone Number -->
@@ -123,20 +122,19 @@
 
             <Spinner
                 android:id="@+id/country_code"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:background="@android:drawable/spinner_background" />
+                android:layout_marginEnd="10dp" />
 
             <EditText
                 android:id="@+id/phone_number"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Phone number *"
-                android:layout_weight="2"
-                android:inputType="phone"
-                android:background="@android:drawable/edit_text" />
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:inputType="phone" />
         </LinearLayout>
 
         <TextView

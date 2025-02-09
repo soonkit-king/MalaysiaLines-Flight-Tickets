@@ -20,8 +20,9 @@ import java.util.List;
 
 import model.Flight;
 import fragment.CustomerDetailsFragment;
+import my.utem.ftmk.flightticketingsystem.BookingActivity;
 import my.utem.ftmk.flightticketingsystem.R;
-import utils.ConversionUtil;
+import utils.Conversions;
 
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
     private List<Flight> flightList;
@@ -46,7 +47,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         holder.tvArrivalAirport.setText(flight.getArrivalAirport());
         holder.tvArrivalTime.setText(flight.getArrivalTime());
         holder.tvDepartureTime.setText(flight.getDepartureTime());
-        holder.tvPriceRate.setText(flight.getPriceRate());
+        holder.tvPriceRate.setText(Conversions.formatPriceRate(flight.getPriceRate()));
         holder.tvFlightDuration.setText(flight.getDuration());
 
         // Handle Select Button Click
@@ -82,13 +83,20 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         builder.setView(dialogView);
 
         // Initialize UI Elements
-        TextView flightInfo = dialogView.findViewById(R.id.flightInf0);
+        TextView flightInfo = dialogView.findViewById(R.id.flightInfo);
         Button dateButton = dialogView.findViewById(R.id.dateButton);
-        NumberPicker paxPicker = dialogView.findViewById(R.id.passengerPicker);
+        NumberPicker paxPicker = dialogView.findViewById(R.id.paxPicker);
         Button confirmButton = dialogView.findViewById(R.id.confirmButton);
 
-        // Set Flight Info
-        flightInfo.setText(flight.getDepartureAirport() + "→" + flight.getArrivalAirport() + "\n" + flight.departureTime() + "→" + flight.getTimeArrive() + "\n" + flight.getPrice());
+        // Format Flight Info
+        String formattedInfo = String.format("%s → %s\n%s → %s\n%s",
+                flight.getDepartureAirport(),
+                flight.getArrivalAirport(),
+                flight.getDepartureTime(),  // Already in HH:mm
+                flight.getArrivalTime(),    // Already in HH:mm
+                Conversions.formatPriceRate(flight.getPriceRate()));
+
+        flightInfo.setText(formattedInfo);
 
         // Set Number Picker (1 - 10 passengers)
         paxPicker.setMinValue(1);
@@ -100,7 +108,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                     (view, year, month, dayOfMonth) -> {
-                        selectedDate[0] = dayOfMonth + "/" + (month + 1) + "/" + year;
+                        selectedDate[0] = Conversions.formatDate(dayOfMonth, month, year); // Convert to DD MMM YYYY
                         dateButton.setText(selectedDate[0]);
                     },
                     calendar.get(Calendar.YEAR),
@@ -116,25 +124,30 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
             if (selectedDate[0].isEmpty()) {
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
-
-                // Convert date + time + flight duration = datetimes (departure and arrival)
-                List<String> datetimes = ConversionUtil.compileBoardingDatetimes(selectedDate[0], flight.departureTime(), flight.getDuration());
-
-                // Create Intent to navigate to AddOnActivity
-                Intent intent = new Intent(context, CustomerDetailsFragment.class);
-                intent.putExtra("departureAirport", flight.getDepartureAirport());
-                intent.putExtra("arrivalAirport", flight.getArrivalAirport());
-                intent.putExtra("departureDatetime", datetimes.get(0));
-                intent.putExtra("arrivalDatetime", datetimes.get(1));
-                intent.putExtra("pax", selectedPax);
-                intent.putExtra("price", flight.getPriceRate());
+                // Convert date + time + duration into datetime values
+                List<String> datetimes = Conversions.compileBoardingDatetimes(selectedDate[0], flight.getDepartureTime(), flight.getDuration());
+                Intent intent = getIntent(flight, selectedPax, datetimes);
 
                 context.startActivity(intent);
                 dialog.dismiss();
             }
         });
 
-
         dialog.show();
+    }
+
+
+    private @NonNull Intent getIntent(Flight flight, int selectedPax, List<String> datetimes) {
+        double totalPayment = Conversions.calculateTotalPayment(selectedPax, flight.getPriceRate());
+
+        // Create Intent to navigate to AddOnActivity
+        Intent intent = new Intent(context, BookingActivity.class);
+        intent.putExtra("departureAirport", flight.getDepartureAirport());
+        intent.putExtra("arrivalAirport", flight.getArrivalAirport());
+        intent.putExtra("departureDatetime", datetimes.get(0));
+        intent.putExtra("arrivalDatetime", datetimes.get(1));
+        intent.putExtra("pax", selectedPax);
+        intent.putExtra("totalPayment", totalPayment);
+        return intent;
     }
 }
