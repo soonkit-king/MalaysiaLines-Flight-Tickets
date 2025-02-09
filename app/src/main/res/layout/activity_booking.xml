@@ -158,16 +158,20 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="-127dp">
+        <FrameLayout
+            android:id="@+id/passanger_detail_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:textColor="@color/black"
             android:padding="16dp" />
-
+        </ScrollView>
         <!-- Total and Button -->
         <View
             android:layout_width="match_parent"
@@ -206,6 +210,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btnAdd_on"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

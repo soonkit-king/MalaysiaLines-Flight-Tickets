@@ -1,29 +1,59 @@
 package fragment;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.ArrayList;
+import java.util.List;
 
+import adapter.PassengerDetailAdapter;
+import model.Passenger;
 import my.utem.ftmk.flightticketingsystem.R;
 
-public class CustomerDetailsFragment extends AppCompatActivity {
-    TextView tv;
+public class CustomerDetailsFragment extends Fragment {
 
-    @SuppressLint("MissingInflatedId")
+    private RecyclerView rvPassengerDetail;
+    private PassengerDetailAdapter passengerDetailAdapter;
+    private List<Passenger> passengerList = new ArrayList<>();
+    private int passengerCount = 1; // Default value
+
+    public CustomerDetailsFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_booking);
-        Intent intent = getIntent();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_customer_details, container, false);
+    }
 
-        tv = findViewById(R.id.tvEndAirport);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        String msg = intent.getStringExtra("flight_depart");
-        tv.setText(msg);
+        rvPassengerDetail = view.findViewById(R.id.rvPassengerDetail);
+        rvPassengerDetail.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Get the passenger count from the intent or arguments
+        if (getActivity() != null && getActivity().getIntent().hasExtra("passengers")) {
+            passengerCount = getActivity().getIntent().getIntExtra("passengers", 1);
+        }
+
+        generatePassengers(passengerCount);
+    }
+
+    private void generatePassengers(int count) {
+        passengerList.clear(); // Clear previous data
+        for (int i = 0; i < count; i++) {
+            passengerList.add(new Passenger("", "", "", "", "", "", "", ""));
+        }
+        passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
+        rvPassengerDetail.setAdapter(passengerDetailAdapter);
     }
 }

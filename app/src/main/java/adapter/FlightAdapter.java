@@ -20,6 +20,7 @@ import java.util.List;
 
 import model.Flight;
 import fragment.CustomerDetailsFragment;
+import my.utem.ftmk.flightticketingsystem.BookingActivity;
 import my.utem.ftmk.flightticketingsystem.R;
 
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
@@ -116,7 +117,7 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
                 // Create Intent to navigate to AddOnActivity
-                Intent intent = new Intent(context, CustomerDetailsFragment.class);
+                Intent intent = new Intent(context, BookingActivity.class);
                 intent.putExtra("flight_depart", flight.getDepartureAirport());
                 intent.putExtra("flight_arive", flight.getArrivalAirport());
                 intent.putExtra("flight_date", selectedDate[0]);
