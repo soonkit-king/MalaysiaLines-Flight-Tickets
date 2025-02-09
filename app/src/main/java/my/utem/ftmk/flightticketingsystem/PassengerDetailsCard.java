@@ -32,7 +32,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.card_passenger_details);
+        setContentView(R.layout.card_contact_details);
 
         // Get pax from the intent that opened this activity
         pax = getIntent().getIntExtra("pax", 1);
@@ -49,10 +49,10 @@ public class PassengerDetailsCard extends AppCompatActivity {
         emailErrorTextView = findViewById(R.id.email_error);
         phoneNumberErrorTextView = findViewById(R.id.phone_number_error);
         countryCodeSpinner = findViewById(R.id.country_code);
-
+        setupCountryCodeSpinner();
        /* closeButton = findViewById(R.id.close_button);
         closeButton.setOnClickListener(v -> showConfirmationDialog());
-        setupCountryCodeSpinner();
+
         nextButton = findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> validateAndMoveToNextScreen());
         //paxTextView = findViewById(R.id.text_pax);

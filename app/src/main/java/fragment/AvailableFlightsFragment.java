@@ -46,6 +46,9 @@ public class AvailableFlightsFragment extends Fragment {
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
+
+
+
     }
 
 }

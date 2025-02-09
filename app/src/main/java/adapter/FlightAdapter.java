@@ -20,8 +20,8 @@ import java.util.List;
 
 import model.Flight;
 import fragment.CustomerDetailsFragment;
+import my.utem.ftmk.flightticketingsystem.BookingActivity;
 import my.utem.ftmk.flightticketingsystem.R;
-import utils.ConversionUtil;
 
 public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightViewHolder> {
     private List<Flight> flightList;
@@ -44,9 +44,9 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         Flight flight = flightList.get(position);
         holder.tvDepartureAirport.setText(flight.getDepartureAirport());
         holder.tvArrivalAirport.setText(flight.getArrivalAirport());
-        holder.tvArrivalTime.setText(flight.getArrivalTime());
-        holder.tvDepartureTime.setText(flight.getDepartureTime());
-        holder.tvPriceRate.setText(flight.getPriceRate());
+        holder.tvArrivalTime.setText(flight.getTimeArrive());
+        holder.tvDepartureTime.setText(flight.getTimeDepart());
+        holder.tvPriceRate.setText(flight.getPrice());
         holder.tvFlightDuration.setText(flight.getDuration());
 
         // Handle Select Button Click
@@ -84,15 +84,15 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         // Initialize UI Elements
         TextView flightInfo = dialogView.findViewById(R.id.flightInf0);
         Button dateButton = dialogView.findViewById(R.id.dateButton);
-        NumberPicker paxPicker = dialogView.findViewById(R.id.passengerPicker);
+        NumberPicker passengerPicker = dialogView.findViewById(R.id.passengerPicker);
         Button confirmButton = dialogView.findViewById(R.id.confirmButton);
 
         // Set Flight Info
-        flightInfo.setText(flight.getDepartureAirport() + "→" + flight.getArrivalAirport() + "\n" + flight.departureTime() + "→" + flight.getTimeArrive() + "\n" + flight.getPrice());
+        flightInfo.setText(flight.getDepartureAirport() + "→" + flight.getArrivalAirport() + "\n" + flight.getTimeDepart() + "→" + flight.getTimeArrive() + "\n" + flight.getPrice());
 
         // Set Number Picker (1 - 10 passengers)
-        paxPicker.setMinValue(1);
-        paxPicker.setMaxValue(10);
+        passengerPicker.setMinValue(1);
+        passengerPicker.setMaxValue(10);
 
         // Handle Date Picker
         final String[] selectedDate = {""}; // Store selected date
@@ -112,22 +112,19 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         // Handle Confirm Button
         AlertDialog dialog = builder.create();
         confirmButton.setOnClickListener(v -> {
-            int selectedPax = paxPicker.getValue();
+            int selectedPassengers = passengerPicker.getValue();
             if (selectedDate[0].isEmpty()) {
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
-
-                // Convert date + time + flight duration = datetimes (departure and arrival)
-                List<String> datetimes = ConversionUtil.compileBoardingDatetimes(selectedDate[0], flight.departureTime(), flight.getDuration());
-
                 // Create Intent to navigate to AddOnActivity
-                Intent intent = new Intent(context, CustomerDetailsFragment.class);
-                intent.putExtra("departureAirport", flight.getDepartureAirport());
-                intent.putExtra("arrivalAirport", flight.getArrivalAirport());
-                intent.putExtra("departureDatetime", datetimes.get(0));
-                intent.putExtra("arrivalDatetime", datetimes.get(1));
-                intent.putExtra("pax", selectedPax);
-                intent.putExtra("price", flight.getPriceRate());
+                Intent intent = new Intent(context, BookingActivity.class);
+                intent.putExtra("flight_depart", flight.getDepartureAirport());
+                intent.putExtra("flight_arive", flight.getArrivalAirport());
+                intent.putExtra("flight_date", selectedDate[0]);
+                intent.putExtra("passengers", selectedPassengers);
+                intent.putExtra("departure_time", flight.getTimeDepart());
+                intent.putExtra("arrival_time", flight.getTimeArrive());
+                intent.putExtra("price", flight.getPrice());
 
                 context.startActivity(intent);
                 dialog.dismiss();
