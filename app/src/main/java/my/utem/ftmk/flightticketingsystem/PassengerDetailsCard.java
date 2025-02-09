@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import fragment.AddOnFragment;
+import fragment.AddOnsFragment;
 
 public class PassengerDetailsCard extends AppCompatActivity {
 
@@ -29,6 +29,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
     private Button nextButton;
     private int pax = 0; // Variable to hold the number of passengers
     private TextView paxTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,7 +171,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
             // Implement moving to the add-on screen or any other logic here
             //Example: Replace the current activity with the next activity
 
-            Intent intent = new Intent(this, AddOnFragment.class);
+            Intent intent = new Intent(this, AddOnsFragment.class);
             startActivity(intent);
         }
         else {

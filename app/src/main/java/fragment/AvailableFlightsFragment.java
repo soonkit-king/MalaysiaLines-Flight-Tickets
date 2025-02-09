@@ -32,7 +32,6 @@ public class AvailableFlightsFragment extends Fragment {
         // Load Flights
         loadFlights();
 
-
         // Set Adapter
         flightAdapter = new FlightAdapter(getContext(),flightList);
         recyclerView.setAdapter(flightAdapter);
@@ -42,13 +41,10 @@ public class AvailableFlightsFragment extends Fragment {
 
     private void loadFlights() {
         flightList = new ArrayList<>();
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-
-
-
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
     }
 
 }

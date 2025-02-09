@@ -13,20 +13,21 @@
         android:theme="@style/Theme.FlightTicketingSystem"
         tools:targetApi="31">
 
-
         <activity
             android:name=".BookingActivity"
-            android:exported="true" />
-
-
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name=".PaymentValidationActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name=".SeatSelectionActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
