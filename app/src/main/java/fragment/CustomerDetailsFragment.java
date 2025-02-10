@@ -29,7 +29,7 @@ public class CustomerDetailsFragment extends Fragment {
     private RecyclerView rvPassengerDetail;
     private PassengerDetailAdapter passengerDetailAdapter;
     private Spinner countryCodeSpinner;
-    private ImageView closeButton;
+
     private List<Passenger> passengerList = new ArrayList<>();
     private int pax = 1; // Default value
 
@@ -48,8 +48,7 @@ public class CustomerDetailsFragment extends Fragment {
 
         rvPassengerDetail = view.findViewById(R.id.rvPassengerDetail);
         countryCodeSpinner = view.findViewById(R.id.country_code);
-        closeButton = view.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(v -> showConfirmationDialog());
+
 
         rvPassengerDetail.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -85,35 +84,7 @@ public class CustomerDetailsFragment extends Fragment {
         countryCodeSpinner.setAdapter(adapter);
     }
 
-    private void showConfirmationDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Are you sure you want to go back?");
-        builder.setMessage("The information you've entered will be lost if you proceed.");
-        builder.setCancelable(false);
-        builder.setNegativeButton("No", (dialog, which) -> {
-            // Do nothing and close the dialog
-            dialog.dismiss();
-        });
-
-        builder.setPositiveButton("Yes", (dialog, which) -> {
-            // Go back if the user confirms
-            //finish();
-        });
-
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        Button yesButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        Button noButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-
-        if(yesButton!= null && noButton !=null){
-            yesButton.setTextColor(Color.RED);
-            noButton.setTextColor(Color.BLACK);
-        }
-    }
 
 
 }
