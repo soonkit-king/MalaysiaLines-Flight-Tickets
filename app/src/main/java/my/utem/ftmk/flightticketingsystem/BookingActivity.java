@@ -22,6 +22,8 @@ public class BookingActivity extends AppCompatActivity {
     private Button btnNext;
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName;
+    private TextView tvPax;
+    private int pax = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +33,16 @@ public class BookingActivity extends AppCompatActivity {
         btnNext = findViewById(R.id.next_button);
         btnCloseOrBack = findViewById(R.id.close_or_back_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
+        tvPax = findViewById(R.id.tvPax);
 
         // Initial state - always start with CustomerDetailsFragment
         replaceFragment(new CustomerDetailsFragment());
         btnNext.setText("Continue to add-ons");
         isFragmentReplaced = false;
+
+        pax = getIntent().getIntExtra("pax", 1);
+
+        tvPax.setText(pax + " pax");
 
         btnCloseOrBack.setOnClickListener(new View.OnClickListener() {
             @Override
