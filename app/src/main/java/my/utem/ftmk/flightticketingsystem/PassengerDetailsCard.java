@@ -122,7 +122,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
     private void showConfirmationDialog() {
         if (!isFormFilled()) {
             //If the form is empty, just close the current activity
-            finish();
+
             return;
         }
         //else:
@@ -136,8 +136,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
         });
 
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            // Go back if the user confirms
-            finish();
+
         });
 
 

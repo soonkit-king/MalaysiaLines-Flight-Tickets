@@ -27,7 +27,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
         backToMenuButton.setOnClickListener(v -> {
             Intent i = new Intent(BookingSuccessActivity.this, MainActivity.class);
             startActivity(i);
-            finish();
+finish();
         });
 
     }
