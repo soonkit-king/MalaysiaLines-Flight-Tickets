@@ -1,6 +1,5 @@
 package my.utem.ftmk.flightticketingsystem;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +26,8 @@ public class BookingActivity extends AppCompatActivity {
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName;
     private static final int SEAT_SELECTION_REQUEST = 1;
+    private TextView tvPax;
+    private int pax = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +37,16 @@ public class BookingActivity extends AppCompatActivity {
         btnNext = findViewById(R.id.next_button);
         btnCloseOrBack = findViewById(R.id.close_or_back_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
+        tvPax = findViewById(R.id.tvPax);
 
         // Initial state - always start with CustomerDetailsFragment
         replaceFragment(new CustomerDetailsFragment());
         btnNext.setText("Continue to add-ons");
         isFragmentReplaced = false;
+
+        pax = getIntent().getIntExtra("pax", 1);
+
+        tvPax.setText(pax + " pax");
 
         btnCloseOrBack.setOnClickListener(new View.OnClickListener() {
             @Override
