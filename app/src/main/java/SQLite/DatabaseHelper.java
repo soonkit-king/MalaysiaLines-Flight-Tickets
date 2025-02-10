@@ -6,14 +6,26 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Xml;
+import org.xmlpull.v1.XmlSerializer;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "flight_booking.db";
     private static final int DATABASE_VERSION = 1;
+    private Context context;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -37,97 +49,125 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "refund_guarantee INTEGER, " +
                 "total_payment REAL, " +
                 "FOREIGN KEY(flight_id) REFERENCES flight(flight_id))");
-
-        db.execSQL("CREATE TABLE contact (" +
-                "contact_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "booking_id INTEGER, " +
-                "first_name TEXT, " +
-                "last_name TEXT, " +
-                "email TEXT, " +
-                "residence_country TEXT, " +
-                "country_code TEXT, " +
-                "phone_number TEXT, " +
-                "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
-
-        db.execSQL("CREATE TABLE passenger (" +
-                "passenger_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "booking_id INTEGER, " +
-                "first_name TEXT, " +
-                "last_name TEXT, " +
-                "date_of_birth TEXT, " +
-                "nationality TEXT, " +
-                "issue_country TEXT, " +
-                "passport_number TEXT, " +
-                "passport_expiry_date TEXT, " +
-                "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS flight");
         db.execSQL("DROP TABLE IF EXISTS booking");
-        db.execSQL("DROP TABLE IF EXISTS contact");
-        db.execSQL("DROP TABLE IF EXISTS passenger");
         onCreate(db);
     }
 
-    // CRUD operations for flight
-    public boolean insertFlight(String departure, String arrival, String depTime, String arrTime, String duration, double price) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("departure_airport", departure);
-        values.put("arrival_airport", arrival);
-        values.put("departure_time", depTime);
-        values.put("arrival_time", arrTime);
-        values.put("flight_duration", duration);
-        values.put("price_rate", price);
-        long result = db.insert("flight", null, values);
-        return result != -1;
+    // Method to insert flight data from XML
+    public void importFlightsFromXML(File xmlFile) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(new FileReader(xmlFile));
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+
+            int eventType = parser.getEventType();
+            String text = null;
+            String departure = null, arrival = null, depTime = null, arrTime = null, duration = null;
+            double price = 0.0;
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String tagName = parser.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if (tagName.equals("flight")) {
+                            departure = arrival = depTime = arrTime = duration = null;
+                            price = 0.0;
+                        }
+                        break;
+                    case XmlPullParser.TEXT:
+                        text = parser.getText();
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if (tagName.equals("departure_airport")) departure = text;
+                        else if (tagName.equals("arrival_airport")) arrival = text;
+                        else if (tagName.equals("departure_time")) depTime = text;
+                        else if (tagName.equals("arrival_time")) arrTime = text;
+                        else if (tagName.equals("flight_duration")) duration = text;
+                        else if (tagName.equals("price_rate")) price = Double.parseDouble(text);
+                        else if (tagName.equals("flight")) {
+                            values.put("departure_airport", departure);
+                            values.put("arrival_airport", arrival);
+                            values.put("departure_time", depTime);
+                            values.put("arrival_time", arrTime);
+                            values.put("flight_duration", duration);
+                            values.put("price_rate", price);
+                            db.insert("flight", null, values);
+                        }
+                        break;
+                }
+                eventType = parser.next();
+            }
+            db.close();
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Cursor getFlights() {
+    // Method to export flight data to XML
+    public void exportFlightsToXML(File xmlFile) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM flight", null);
-    }
+        Cursor cursor = db.rawQuery("SELECT * FROM flight", null);
 
-    public boolean updateFlight(int id, String departure, String arrival, String depTime, String arrTime, String duration, double price) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("departure_airport", departure);
-        values.put("arrival_airport", arrival);
-        values.put("departure_time", depTime);
-        values.put("arrival_time", arrTime);
-        values.put("flight_duration", duration);
-        values.put("price_rate", price);
-        int result = db.update("flight", values, "flight_id=?", new String[]{String.valueOf(id)});
-        return result > 0;
-    }
+        try {
+            XmlSerializer serializer = Xml.newSerializer();
+            StringWriter writer = new StringWriter();
+            serializer.setOutput(writer);
 
-    public boolean deleteFlight(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete("flight", "flight_id=?", new String[]{String.valueOf(id)});
-        return result > 0;
-    }
+            serializer.startDocument("UTF-8", true);
+            serializer.startTag("", "flights");
 
-    // CRUD operations for booking
-    public boolean insertBooking(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("flight_id", flightId);
-        values.put("pax", pax);
-        values.put("departure_datetime", depDatetime);
-        values.put("arrival_datetime", arrDatetime);
-        values.put("seat_no", seatNo);
-        values.put("refund_guarantee", refund);
-        values.put("total_payment", payment);
-        long result = db.insert("booking", null, values);
-        return result != -1;
-    }
+            while (cursor.moveToNext()) {
+                serializer.startTag("", "flight");
 
-    public Cursor getBookings() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM booking", null);
-    }
+                serializer.startTag("", "flight_id");
+                serializer.text(cursor.getString(0));
+                serializer.endTag("", "flight_id");
 
-    // CRUD operations for contact and passenger follow the same pattern
+                serializer.startTag("", "departure_airport");
+                serializer.text(cursor.getString(1));
+                serializer.endTag("", "departure_airport");
+
+                serializer.startTag("", "arrival_airport");
+                serializer.text(cursor.getString(2));
+                serializer.endTag("", "arrival_airport");
+
+                serializer.startTag("", "departure_time");
+                serializer.text(cursor.getString(3));
+                serializer.endTag("", "departure_time");
+
+                serializer.startTag("", "arrival_time");
+                serializer.text(cursor.getString(4));
+                serializer.endTag("", "arrival_time");
+
+                serializer.startTag("", "flight_duration");
+                serializer.text(cursor.getString(5));
+                serializer.endTag("", "flight_duration");
+
+                serializer.startTag("", "price_rate");
+                serializer.text(cursor.getString(6));
+                serializer.endTag("", "price_rate");
+
+                serializer.endTag("", "flight");
+            }
+            serializer.endTag("", "flights");
+            serializer.endDocument();
+
+            FileOutputStream fos = new FileOutputStream(xmlFile);
+            fos.write(writer.toString().getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+            db.close();
+        }
+    }
 }
