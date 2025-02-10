@@ -1,4 +1,4 @@
-package my.utem.ftmk.flightticketingsystem;
+package fragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -12,29 +12,25 @@ import java.util.List;
 
 import adapter.FlightAdapter;
 import model.Flight;
+import my.utem.ftmk.flightticketingsystem.R;
 
-public class BookFlight extends Fragment {
+public class AvailableFlightsFragment extends Fragment {
 
     RecyclerView recyclerView;
     FlightAdapter flightAdapter;
     private List<Flight> flightList;
 
-    public BookFlight() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_book_flight, container, false);
+        View view = inflater.inflate(R.layout.fragment_available_flights, container, false);
 
         // Initialize RecyclerView
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.rvFlights);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Load Flights
         loadFlights();
-
 
         // Set Adapter
         flightAdapter = new FlightAdapter(getContext(),flightList);
@@ -45,10 +41,10 @@ public class BookFlight extends Fragment {
 
     private void loadFlights() {
         flightList = new ArrayList<>();
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
-        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "18:50" , "5h 12m" , "RM233 / pax"));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
+        flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
     }
 
 }

@@ -5,14 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:padding="16dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="20dp">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/airplane_flying_up" />
+
 
         <!-- Passenger Title -->
         <TextView
@@ -20,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Passenger [i]:"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="4dp" />
@@ -39,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gender *"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />
 
@@ -52,6 +65,7 @@
                 android:id="@+id/radioMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
                 android:text="Male" />
 
             <RadioButton
@@ -67,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="First name *"
+            android:textSize="16sp"
             android:inputType="textPersonName"
             android:layout_marginTop="16dp" />
 
@@ -76,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Last name *"
+            android:textSize="16sp"
             android:inputType="textPersonName"
             android:layout_marginTop="8dp" />
 
@@ -86,6 +102,7 @@
             android:layout_height="wrap_content"
             android:text="Date of birth *"
             android:textStyle="bold"
+            android:textColor="@color/black"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
@@ -100,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Day"
+                android:textSize="16sp"
                 android:inputType="number" />
 
             <EditText
@@ -109,6 +127,7 @@
                 android:layout_weight="1"
                 android:hint="Month"
                 android:inputType="number"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp" />
 
             <EditText
@@ -118,6 +137,7 @@
                 android:layout_weight="1"
                 android:hint="Year"
                 android:inputType="number"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
@@ -128,6 +148,7 @@
             android:layout_height="wrap_content"
             android:hint="Nationality *"
             android:inputType="text"
+            android:textSize="16sp"
             android:layout_marginTop="16dp" />
 
         <!-- Country/Region of Issue -->
@@ -137,6 +158,7 @@
             android:layout_height="wrap_content"
             android:hint="Country/Region of issue *"
             android:inputType="text"
+            android:textSize="16sp"
             android:layout_marginTop="8dp" />
 
         <!-- Passport Number -->
@@ -146,6 +168,7 @@
             android:layout_height="wrap_content"
             android:hint="Passport number *"
             android:inputType="text"
+            android:textSize="16sp"
             android:layout_marginTop="8dp" />
 
         <!-- Passport Expiry Date -->
@@ -155,6 +178,8 @@
             android:layout_height="wrap_content"
             android:text="Passport expiry date *"
             android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
@@ -168,6 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Day"
+                android:textSize="16sp"
                 android:inputType="number" />
 
             <EditText
@@ -176,6 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Month"
+                android:textSize="16sp"
                 android:inputType="number"
                 android:layout_marginStart="8dp" />
 
@@ -185,6 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Year"
+                android:textSize="16sp"
                 android:inputType="number"
                 android:layout_marginStart="8dp" />
         </LinearLayout>

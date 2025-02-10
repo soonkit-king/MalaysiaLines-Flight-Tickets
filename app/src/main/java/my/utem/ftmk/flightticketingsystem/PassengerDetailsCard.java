@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Passenger_Details extends AppCompatActivity {
+import fragment.AddOnsFragment;
+
+public class PassengerDetailsCard extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
     private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
@@ -27,10 +29,11 @@ public class Passenger_Details extends AppCompatActivity {
     private Button nextButton;
     private int pax = 0; // Variable to hold the number of passengers
     private TextView paxTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_passenger_details);
+        setContentView(R.layout.card_contact_details);
 
         // Get pax from the intent that opened this activity
         pax = getIntent().getIntExtra("pax", 1);
@@ -47,14 +50,14 @@ public class Passenger_Details extends AppCompatActivity {
         emailErrorTextView = findViewById(R.id.email_error);
         phoneNumberErrorTextView = findViewById(R.id.phone_number_error);
         countryCodeSpinner = findViewById(R.id.country_code);
-
-        closeButton = findViewById(R.id.close_button);
-        closeButton.setOnClickListener(v -> showConfirmationDialog());
         setupCountryCodeSpinner();
+       /* closeButton = findViewById(R.id.close_button);
+        closeButton.setOnClickListener(v -> showConfirmationDialog());
+
         nextButton = findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> validateAndMoveToNextScreen());
         //paxTextView = findViewById(R.id.text_pax);
-       // paxTextView.setText(pax + " pax");
+       // paxTextView.setText(pax + " pax");*/
 
 
 
@@ -119,7 +122,7 @@ public class Passenger_Details extends AppCompatActivity {
     private void showConfirmationDialog() {
         if (!isFormFilled()) {
             //If the form is empty, just close the current activity
-            finish();
+
             return;
         }
         //else:
@@ -133,8 +136,7 @@ public class Passenger_Details extends AppCompatActivity {
         });
 
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            // Go back if the user confirms
-            finish();
+
         });
 
 
@@ -168,7 +170,7 @@ public class Passenger_Details extends AppCompatActivity {
             // Implement moving to the add-on screen or any other logic here
             //Example: Replace the current activity with the next activity
 
-            Intent intent = new Intent(this, AddOnActivity.class);
+            Intent intent = new Intent(this, AddOnsFragment.class);
             startActivity(intent);
         }
         else {

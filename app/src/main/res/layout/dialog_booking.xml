@@ -8,7 +8,7 @@
 
     <!-- Flight Info -->
     <TextView
-        android:id="@+id/flightInf0"
+        android:id="@+id/flightInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Flight Info"
@@ -21,7 +21,8 @@
         android:id="@+id/dateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Date" />
+        android:textAllCaps="false"
+        android:text="Select departure date" />
 
     <!-- Select Passengers -->
     <TextView
@@ -32,7 +33,7 @@
         android:paddingTop="10dp"/>
 
     <NumberPicker
-        android:id="@+id/passengerPicker"
+        android:id="@+id/paxPicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -41,8 +42,9 @@
         android:id="@+id/confirmButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Confirm Booking"
+        android:text="Continue"
         android:backgroundTint="#EB7A2FC8"
+        android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:layout_marginTop="10dp"/>
 

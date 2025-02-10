@@ -1,19 +1,17 @@
 package my.utem.ftmk.flightticketingsystem;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import fragment.AvailableFlightsFragment;
+import fragment.BookingHistoryFragment;
 
+public class MainActivity extends AppCompatActivity {
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default fragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, new BookFlight())
+                .replace(R.id.nav_host_fragment, new AvailableFlightsFragment())
                 .commit();
         
         // Handle navigation item clicks
@@ -31,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
             Fragment selectedFragment = null;
 
             if (item.getItemId() == R.id.nav_book_flight) {
-                selectedFragment = new BookFlight();
+                selectedFragment = new AvailableFlightsFragment();
             } else if (item.getItemId() == R.id.nav_booking_history) {
-                selectedFragment = new BookingHistory();
+                selectedFragment = new BookingHistoryFragment();
             }
 
             if (selectedFragment != null) {
@@ -43,10 +41,5 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
-//        Intent i = new Intent(this, activitySeatSelection.class);
-//        startActivity(i);
-        // This is seat selectin page
-
     }
 }

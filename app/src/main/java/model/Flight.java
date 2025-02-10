@@ -1,44 +1,70 @@
 package model;
 
 public class Flight {
-    private String fromTo;
-    private String goTo;
-    private String timeDepart;
-
-    private String timeArrive;
+    private String departureAirport;
+    private String arrivalAirport;
+    private String departureTime;
+    private String arrivalTime;
     private String duration;
-    private String price;
+    private double priceRate;
 
-    public Flight(String fromTo,String goTo,  String timeDepart, String timeArrive, String duration, String price) {
-        this.fromTo = fromTo;
-        this.goTo = goTo;
-        this.timeArrive = timeArrive;
-        this.timeDepart = timeDepart;
+    // Constructor (optional, but recommended)
+    public Flight(String departureAirport, String arrivalAirport, String departureTime, String arrivalTime, String duration, double priceRate) {
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
         this.duration = duration;
-        this.price = price;
+        this.priceRate = priceRate;
     }
 
-    public String getFromTo() {
-        return fromTo;
+    // Getters
+    public String getDepartureAirport() {
+        return departureAirport;
     }
 
-    public String getGoTo() {
-        return goTo;
+    public String getArrivalAirport() {
+        return arrivalAirport;
     }
 
-    public String getTimeArrive() {
-        return timeArrive;
+    public String getDepartureTime() {
+        return departureTime;
     }
 
-    public String getTimeDepart() {
-        return timeDepart;
+    public String getArrivalTime() {
+        return arrivalTime;
     }
 
     public String getDuration() {
         return duration;
     }
 
-    public String getPrice() {
-        return price;
+    public double getPriceRate() {
+        return priceRate;
+    }
+
+    // Setters
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public void setArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public void setPriceRate(double priceRate) {
+        this.priceRate = priceRate;
     }
 }

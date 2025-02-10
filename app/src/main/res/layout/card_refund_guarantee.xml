@@ -12,7 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="20dp">
 
         <!-- Refund Guarantee Title -->
         <TextView
@@ -29,23 +32,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="10dp">
 
             <!-- Feature 1 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_check"
                 android:drawablePadding="8dp"
                 android:text="Guaranteed 90% refund"
                 android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                app:drawableLeftCompat="@drawable/green_check" />
 
             <!-- Feature 2 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_check"
+                app:drawableLeftCompat="@drawable/green_check"
                 android:drawablePadding="8dp"
                 android:text="No questions asked"
                 android:textSize="16sp"
@@ -55,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_check"
+                app:drawableLeftCompat="@drawable/green_check"
                 android:drawablePadding="8dp"
                 android:text="Cancel up to 2 hours before departure"
                 android:textSize="16sp"
@@ -67,17 +70,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="space_between"
-            android:layout_marginTop="16dp">
+            android:gravity="center"
+            android:layout_marginTop="18dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Refund Guarantee"
                 android:textSize="16sp"
+                android:layout_marginRight="8dp"
                 android:textColor="@android:color/black" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_refund_guarantee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
