@@ -8,10 +8,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp">
 
+        <!-- Back Button (Left) -->
         <ImageButton
             android:id="@+id/btnBackToAddOns"
             android:layout_width="wrap_content"
@@ -19,16 +19,27 @@
             android:background="@color/white"
             android:src="@drawable/baseline_arrow_back_ios_24" />
 
+        <!-- Title (Centered) -->
         <TextView
             android:id="@+id/tvBookingSectionName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="1"
             android:text="Choose your seats on your flight"
             android:textSize="18sp"
             android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- Done Button (Right) -->
+        <ImageButton
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:src="@drawable/baseline_check_24" />
     </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"

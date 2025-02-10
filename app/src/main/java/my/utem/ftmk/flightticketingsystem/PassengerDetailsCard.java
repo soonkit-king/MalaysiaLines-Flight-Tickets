@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log; // For logging API responses and debugging
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,13 +13,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import java.io.IOException; // Needed for handling API response errors
 import java.util.ArrayList;
 import java.util.List;
-
 import fragment.AddOnsFragment;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class PassengerDetailsCard extends AppCompatActivity {
 
@@ -29,6 +40,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
     private Button nextButton;
     private int pax = 0; // Variable to hold the number of passengers
     private TextView paxTextView;
+    private OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +62,7 @@ public class PassengerDetailsCard extends AppCompatActivity {
         emailErrorTextView = findViewById(R.id.email_error);
         phoneNumberErrorTextView = findViewById(R.id.phone_number_error);
         countryCodeSpinner = findViewById(R.id.country_code);
-        setupCountryCodeSpinner();
+        fetchCountryCodes();
        /* closeButton = findViewById(R.id.close_button);
         closeButton.setOnClickListener(v -> showConfirmationDialog());
 
@@ -63,18 +75,62 @@ public class PassengerDetailsCard extends AppCompatActivity {
 
     }
 
+    private void fetchCountryCodes() {
+        String url = "https://restcountries.com/v3.1/all"; // API URL
 
-    private void setupCountryCodeSpinner() {
-        // You'll likely want to load these from a resource or an API call
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("API_ERROR", "Failed to fetch country codes", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.e("API_ERROR", "Unexpected response: " + response);
+                    return;
+                }
+
+                String jsonData = response.body().string();
+                Log.d("API_RESPONSE", jsonData); // ✅ Log API data for debugging
+                List<String> countryCodes = parseCountryCodes(jsonData);
+
+                runOnUiThread(() -> setupCountryCodeSpinner(countryCodes));
+            }
+        });
+    }
+
+    private List<String> parseCountryCodes(String jsonData) {
         List<String> countryCodes = new ArrayList<>();
-        countryCodes.add("+1");
-        countryCodes.add("+44");
-        countryCodes.add("+60");
-        countryCodes.add("+81");
-        countryCodes.add("+86");
-        // Setup Spinner
+
+        JsonArray jsonArray = JsonParser.parseString(jsonData).getAsJsonArray();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject country = jsonArray.get(i).getAsJsonObject();
+            if (country.has("idd")) {
+                JsonObject idd = country.getAsJsonObject("idd");
+                if (idd.has("root")) {
+                    String root = idd.get("root").getAsString();
+                    String suffix = idd.has("suffixes") ? idd.getAsJsonArray("suffixes").get(0).getAsString() : "";
+                    countryCodes.add(root + suffix);
+                }
+            }
+        }
+        return countryCodes;
+    }
+
+    private void setupCountryCodeSpinner(List<String> countryCodes) {
+
+        if (countryCodes.isEmpty()) {
+            countryCodes.add("No Data"); // Default fallback
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryCodes);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.expandable_list_content);
         countryCodeSpinner.setAdapter(adapter);
     }
 
