@@ -51,8 +51,13 @@ public class PaymentValidationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Navigate to BookingSuccessActivity after 3 seconds
-                startActivity(new Intent(PaymentValidationActivity.this, BookingSuccessActivity.class));
-                finish();
+
+                Intent intent = new Intent(PaymentValidationActivity.this, BookingSuccessActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // Ensure PaymentValidationActivity is removed from the stack
+
+
             }
         }, 3000); // 3000ms = 3 seconds
     }

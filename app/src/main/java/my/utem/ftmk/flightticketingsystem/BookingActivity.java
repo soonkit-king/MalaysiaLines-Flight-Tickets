@@ -70,7 +70,7 @@ public class BookingActivity extends AppCompatActivity {
                     // Goes from add-ons page to main page
                     Intent intent = new Intent(BookingActivity.this, PaymentValidationActivity.class);
                     startActivity(intent);
-                    finish();
+
                 }
             }
         });
