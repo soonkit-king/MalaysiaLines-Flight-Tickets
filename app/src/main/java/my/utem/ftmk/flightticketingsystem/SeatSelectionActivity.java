@@ -156,12 +156,10 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 // Select seat
                 selectedSeat.setImageResource(R.drawable.seat_icon_green);
                 selectedSeats.add(seatTag); // Add seat to list
-                Toast.makeText(this, "Selected: " + seatTag, Toast.LENGTH_SHORT).show();
             } else {
                 // Deselect seat
                 selectedSeat.setImageResource(R.drawable.seat_icon_blue);
                 selectedSeats.remove(seatTag); // Remove seat from list
-                Toast.makeText(this, "Deselected: " + seatTag, Toast.LENGTH_SHORT).show();
             }
         });
 
