@@ -1,13 +1,17 @@
 package my.utem.ftmk.flightticketingsystem;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,9 +27,9 @@ public class BookingActivity extends AppCompatActivity {
 
     private boolean isFragmentReplaced = false; // Track button state
     private Button btnNext;
-
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName,ratePayment ;
+    private static final int SEAT_SELECTION_REQUEST = 1;
     private TextView tvPax;
     private int pax = 0;
     private double totalPayment = 0;
@@ -55,26 +59,23 @@ public class BookingActivity extends AppCompatActivity {
         // Retrieve values from Intent
         int pax = getIntent().getIntExtra("pax", 1); // Pax as integer
         double totalPayment = getIntent().getDoubleExtra("totalPayment", 1.0); // Total payment as double
-        
+
 
         ratePayment.setText(String.format("RM %.2f", totalPayment));
 
         tvPax.setText(pax + " pax");
-
-       // ratePayment.setText(totalPayment*pax);
 
         btnCloseOrBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isFragmentReplaced) {
                     // Goes from customer details page to main page
-                    finish();
-                    // TODO: Show a dialog and ask if they are sure to or not to exit bcs it will remove inputs
-                    // TODO: Clear/remove all the inputs from sharedpreferences
+                    // Show a dialog and ask if they are sure to or not to exit bcs it will remove inputs
+                    showConfirmDialog();
                 } else {
                     // Goes from add-ons page to customer details page
                     replaceFragment(new CustomerDetailsFragment());
-                    btnNext.setText("Add-ons");
+                    btnNext.setText("Continue to add-ons"); // Changed "Add-ons" to "Continue to add-ons" to match initial state
                     tvBookingSectionName.setText("Passenger details");
                     btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(BookingActivity.this, R.drawable.baseline_close_24));
                     isFragmentReplaced = false;
@@ -109,7 +110,6 @@ public class BookingActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     @Override
@@ -128,4 +128,49 @@ public class BookingActivity extends AppCompatActivity {
     }
 
 
+@Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void clearCustomerDetails() {
+        // Get the list of all SharedPreferences files in the app
+        SharedPreferences sharedPreferences = getSharedPreferences(CustomerDetailsFragment.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear(); // Clears all stored data
+        editor.apply(); // Apply changes
+    }
+
+
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_confirm, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button noButton = dialogView.findViewById(R.id.noButton);
+        Button yesButton = dialogView.findViewById(R.id.yesButton);
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call the method to clear SharedPreferences
+                clearCustomerDetails();
+
+                //After the user has confirm, the code will return to mainActivity page
+                finish();
+                dialog.dismiss();
+            }
+        });
+    }
 }
