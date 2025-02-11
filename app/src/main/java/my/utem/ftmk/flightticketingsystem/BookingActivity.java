@@ -1,8 +1,8 @@
 package my.utem.ftmk.flightticketingsystem;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import SQLite.DatabaseHelper;
 import fragment.AddOnsFragment;
 import fragment.CustomerDetailsFragment;
+import model.Passenger;
 
 public class BookingActivity extends AppCompatActivity {
 
@@ -73,8 +74,7 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void saveBookingToDatabase() {
-        // Dummy data - replace with actual input data
-        int flightId = 1; // You should retrieve actual flightId
+        int flightId = 1; // Retrieve actual flightId
         int pax = 2;
         String depDatetime = "2025-02-15 10:00";
         String arrDatetime = "2025-02-15 14:00";
@@ -82,15 +82,34 @@ public class BookingActivity extends AppCompatActivity {
         int refundGuarantee = 1;
         double totalPayment = 500.0;
 
-        boolean success = databaseHelper.insertBooking(flightId, pax, depDatetime, arrDatetime, seatNo, refundGuarantee, totalPayment);
+        long bookingId = databaseHelper.insertBooking(flightId, pax, depDatetime, arrDatetime, seatNo, refundGuarantee, totalPayment);
+        Log.d("DB_INSERT", "Insert Booking Result: " + bookingId);
 
-        if (success) {
+        if (bookingId != -1) {
+            long contactId = databaseHelper.insertContact((int) bookingId, "John", "Doe", "john.doe@example.com", "Malaysia", "+60", "123456789");
+            Log.d("DB_INSERT", "Insert Contact Result: " + contactId);
+
+            insertPassengers((int) bookingId);
+
             Toast.makeText(this, "Booking saved!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookingActivity.this, PaymentValidationActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Failed to save booking!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void insertPassengers(int bookingId) {
+        Passenger passenger1 = new Passenger("Alice", "Smith", "Female", "1990-05-10", "Malaysia", "Malaysia", "A1234567", "2030-05-10");
+        Passenger passenger2 = new Passenger("Bob", "Johnson", "Male", "1992-07-20", "Malaysia", "Malaysia", "B7654321", "2032-07-20");
+
+        long passenger1Id = databaseHelper.insertPassenger(booking_id, passenger1.getFirstName(), passenger1.getLastName(), passenger1.getDateOfBirth(),
+                passenger1.getNationality(), passenger1.getCountryOfIssue(), passenger1.getPassportNumber(), passenger1.getPassportExpiry());
+        Log.d("DB_INSERT", "Insert Passenger 1 Result: " + passenger1Id);
+
+        long passenger2Id = databaseHelper.insertPassenger(booking_id, passenger2.getFirstName(), passenger2.getLastName(), passenger2.getDateOfBirth(),
+                passenger2.getNationality(), passenger2.getCountryOfIssue(), passenger2.getPassportNumber(), passenger2.getPassportExpiry());
+        Log.d("DB_INSERT", "Insert Passenger 2 Result: " + passenger2Id);
     }
 
     @Override

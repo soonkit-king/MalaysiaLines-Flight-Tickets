@@ -21,6 +21,9 @@ public class Passenger {
         this.passportExpiry = passportExpiry;
     }
 
+    public Passenger(int bookingId, String alice, String smith, String female, String date, String malaysia, String malaysia1, String a1234567, String date1) {
+    }
+
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getGender() { return gender; }
@@ -29,4 +32,8 @@ public class Passenger {
     public String getCountryOfIssue() { return countryOfIssue; }
     public String getPassportNumber() { return passportNumber; }
     public String getPassportExpiry() { return passportExpiry; }
+
+    public byte[] getBookingId() {
+        return new byte[0];
+    }
 }
