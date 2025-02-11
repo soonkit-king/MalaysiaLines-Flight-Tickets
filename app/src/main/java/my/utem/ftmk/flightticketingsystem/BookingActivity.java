@@ -1,5 +1,6 @@
 package my.utem.ftmk.flightticketingsystem;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class BookingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_booking);
 
         btnNext = findViewById(R.id.next_button);
-        btnCloseOrBack = findViewById(R.id.close_or_back_button);
+        btnCloseOrBack = findViewById(R.id.close_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
         tvPax = findViewById(R.id.tvPax);
 
@@ -107,11 +108,24 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void clearCustomerDetails() {
-        SharedPreferences sharedPreferences = getSharedPreferences("CustomerDetails", MODE_PRIVATE); // Replace "CustomerDetails" with your actual SharedPreferences name
+        // Get the list of all SharedPreferences files in the app
+        SharedPreferences sharedPreferences = getSharedPreferences(CustomerDetailsFragment.PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // Clear ALL shared preferences related to customer details!
-        editor.apply();
+        editor.clear(); // Clears all stored data
+        editor.apply(); // Apply changes
+
+        // Clear other SharedPreferences if necessary (Example: BookingDetails, PaymentDetails, etc.)
+        SharedPreferences bookingPrefs = getSharedPreferences("BookingDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor bookingEditor = bookingPrefs.edit();
+        bookingEditor.clear();
+        bookingEditor.apply();
+
+        SharedPreferences paymentPrefs = getSharedPreferences("PaymentDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor paymentEditor = paymentPrefs.edit();
+        paymentEditor.clear();
+        paymentEditor.apply();
     }
+
 
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -135,7 +149,12 @@ public class BookingActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Call the method to clear SharedPreferences
                 clearCustomerDetails();
+
+                //After the user has confirm, the code will return to mainActivity page
+                Intent intent = new Intent(BookingActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
                 dialog.dismiss();
             }

@@ -42,10 +42,9 @@ public class AddOnsFragment extends Fragment {
         btnChooseSeat.setOnClickListener(this::goToSeatSelection);
 
         // CLEAR SHARED PREFS HERE ON FRAGMENT CREATION - consider keeping this out.
-        // clearSharedPreferences();
+        clearSharedPreferences();
 
         // Retrieve selected seats from SharedPreferences - Moved this *after* clearing
-
         displaySelectedSeats();
     }
 
