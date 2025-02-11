@@ -52,10 +52,12 @@ public class BookingActivity extends AppCompatActivity {
         btnNext.setText("Continue to add-ons");
         isFragmentReplaced = false;
 
-       pax = getIntent().getIntExtra("pax", 1);
-        totalPayment = getIntent().getDoubleExtra("totalPayment", 1.0);
-        double ratePerPax = pax*totalPayment;
-        ratePayment.setText(String.format("Rate per pax: %.2f", ratePerPax));
+        // Retrieve values from Intent
+        int pax = getIntent().getIntExtra("pax", 1); // Pax as integer
+        double totalPayment = getIntent().getDoubleExtra("totalPayment", 1.0); // Total payment as double
+        
+
+        ratePayment.setText(String.format("RM %.2f", totalPayment));
 
         tvPax.setText(pax + " pax");
 
