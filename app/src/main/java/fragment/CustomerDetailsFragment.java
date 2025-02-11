@@ -121,6 +121,12 @@ public class CustomerDetailsFragment extends Fragment {
         saveDataToSharedPreferences(); // Save data when fragment is paused
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearSharedPreferences();
+    }
+
     private void saveDataToSharedPreferences() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -208,16 +214,6 @@ public class CustomerDetailsFragment extends Fragment {
             }
         }
 
-    }
-
-    // Helper method to find country code from combined phone number
-    private String findCountryCode(String combinedPhoneNumber) {
-        for (String code : countryCodes) {
-            if (combinedPhoneNumber.startsWith(code)) {
-                return code;
-            }
-        }
-        return null;
     }
 
 

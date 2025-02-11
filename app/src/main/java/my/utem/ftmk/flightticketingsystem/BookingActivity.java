@@ -113,17 +113,6 @@ public class BookingActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear(); // Clears all stored data
         editor.apply(); // Apply changes
-
-        // Clear other SharedPreferences if necessary (Example: BookingDetails, PaymentDetails, etc.)
-        SharedPreferences bookingPrefs = getSharedPreferences("BookingDetails", Context.MODE_PRIVATE);
-        SharedPreferences.Editor bookingEditor = bookingPrefs.edit();
-        bookingEditor.clear();
-        bookingEditor.apply();
-
-        SharedPreferences paymentPrefs = getSharedPreferences("PaymentDetails", Context.MODE_PRIVATE);
-        SharedPreferences.Editor paymentEditor = paymentPrefs.edit();
-        paymentEditor.clear();
-        paymentEditor.apply();
     }
 
 
@@ -153,8 +142,6 @@ public class BookingActivity extends AppCompatActivity {
                 clearCustomerDetails();
 
                 //After the user has confirm, the code will return to mainActivity page
-                Intent intent = new Intent(BookingActivity.this, MainActivity.class);
-                startActivity(intent);
                 finish();
                 dialog.dismiss();
             }
