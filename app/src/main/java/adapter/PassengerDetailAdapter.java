@@ -1,5 +1,6 @@
 package adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,39 +34,7 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Passenger passenger = passengerList.get(position);
-
-        // Set passenger title
-        holder.passengerTitle.setText("Passenger " + (position + 1) + ":");
-
-        // Set passenger details
-        holder.firstName.setText(passenger.getFirstName());
-        holder.lastName.setText(passenger.getLastName());
-        holder.nationality.setText(passenger.getNationality());
-        holder.countryOfIssue.setText(passenger.getCountryOfIssue());
-        holder.passportNumber.setText(passenger.getPassportNumber());
-
-        // Set gender selection
-        if (passenger.getGender().equalsIgnoreCase("Male")) {
-            holder.radioMale.setChecked(true);
-        } else if (passenger.getGender().equalsIgnoreCase("Female")) {
-            holder.radioFemale.setChecked(true);
-        }
-
-        // Set date of birth
-        String[] dobParts = passenger.getDateOfBirth().split("/");
-        if (dobParts.length == 3) {
-            holder.dobDay.setText(dobParts[0]);
-            holder.dobMonth.setText(dobParts[1]);
-            holder.dobYear.setText(dobParts[2]);
-        }
-
-        // Set passport expiry date
-        String[] expiryParts = passenger.getPassportExpiry().split("/");
-        if (expiryParts.length == 3) {
-            holder.expiryDay.setText(expiryParts[0]);
-            holder.expiryMonth.setText(expiryParts[1]);
-            holder.expiryYear.setText(expiryParts[2]);
-        }
+        holder.bindPassenger(passenger);
     }
 
     @Override
@@ -74,7 +43,7 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView passengerTitle;
+        TextView passengerTitle, first_name_error, last_name_error,  passport_error,nationality_error,countryOfIssue_error;
         RadioGroup genderGroup;
         RadioButton radioMale, radioFemale;
         EditText firstName, lastName, dobDay, dobMonth, dobYear;
@@ -98,6 +67,103 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
             expiryDay = itemView.findViewById(R.id.expiryDay);
             expiryMonth = itemView.findViewById(R.id.expiryMonth);
             expiryYear = itemView.findViewById(R.id.expiryYear);
+
+            // Error TextViews for Validation
+            first_name_error = itemView.findViewById(R.id.first_name_error);
+            last_name_error = itemView.findViewById(R.id.last_name_error);
+            nationality_error = itemView.findViewById(R.id.nationality_error);
+            passport_error = itemView.findViewById(R.id.passport_error);
+            countryOfIssue_error= itemView.findViewById(R.id.countryOfIssue_error);
         }
+
+        public void bindPassenger(Passenger passenger) {
+            passengerTitle.setText("Passenger " + (getAdapterPosition() + 1) + ":");
+
+            firstName.setText(passenger.getFirstName());
+            lastName.setText(passenger.getLastName());
+            nationality.setText(passenger.getNationality());
+            countryOfIssue.setText(passenger.getCountryOfIssue());
+            passportNumber.setText(passenger.getPassportNumber());
+
+            if (passenger.getGender().equalsIgnoreCase("Male")) {
+                radioMale.setChecked(true);
+            } else if (passenger.getGender().equalsIgnoreCase("Female")) {
+                radioFemale.setChecked(true);
+            }
+
+            String[] dobParts = passenger.getDateOfBirth().split("/");
+            if (dobParts.length == 3) {
+                dobDay.setText(dobParts[0]);
+                dobMonth.setText(dobParts[1]);
+                dobYear.setText(dobParts[2]);
+            }
+
+            String[] expiryParts = passenger.getPassportExpiry().split("/");
+            if (expiryParts.length == 3) {
+                expiryDay.setText(expiryParts[0]);
+                expiryMonth.setText(expiryParts[1]);
+                expiryYear.setText(expiryParts[2]);
+            }
+        }
+
+        public boolean validatePassenger() {
+            boolean isValid = true;
+
+            if (TextUtils.isEmpty(firstName.getText().toString().trim())) {
+                first_name_error.setText("*Required field");
+                first_name_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                first_name_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(lastName.getText().toString().trim())) {
+                last_name_error.setText("*Required field");
+                last_name_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                last_name_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(nationality.getText().toString().trim())) {
+                nationality_error.setText("*Required field");
+                nationality_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                nationality_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(passportNumber.getText().toString().trim())) {
+                passport_error.setText("*Required field");
+                passport_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                passport_error.setVisibility(View.GONE);
+            }
+            if (TextUtils.isEmpty(countryOfIssue_error.getText().toString().trim())) {
+                countryOfIssue_error.setText("*Required field");
+                countryOfIssue_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                countryOfIssue_error.setVisibility(View.GONE);
+            }
+
+            return isValid;
+        }
+
     }
+
+    public boolean validateAllPassengers(RecyclerView recyclerView) {
+        boolean allValid = true;
+        for (int i = 0; i < getItemCount(); i++) {
+            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
+            if (viewHolder instanceof ViewHolder) {
+                if (!((ViewHolder) viewHolder).validatePassenger()) {
+                    allValid = false;
+                }
+            }
+        }
+        return allValid;
+    }
+
 }

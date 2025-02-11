@@ -1,15 +1,14 @@
 package fragment;
 
-import android.app.AlertDialog;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +29,9 @@ public class CustomerDetailsFragment extends Fragment {
     private PassengerDetailAdapter passengerDetailAdapter;
     private Spinner countryCodeSpinner;
 
+    private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
+    private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
+
     private List<Passenger> passengerList = new ArrayList<>();
     private int pax = 1; // Default value
 
@@ -48,6 +50,15 @@ public class CustomerDetailsFragment extends Fragment {
 
         rvPassengerDetail = view.findViewById(R.id.rvPassengerDetail);
         countryCodeSpinner = view.findViewById(R.id.country_code);
+        firstNameEditText = view.findViewById(R.id.first_name);
+        lastNameEditText = view.findViewById(R.id.last_name);
+        emailEditText = view.findViewById(R.id.email);
+        countryResidenceEditText = view.findViewById(R.id.country_residence);
+        phoneNumberEditText = view.findViewById(R.id.phone_number);
+        firstNameErrorTextView = view.findViewById(R.id.first_name_error);
+        lastNameErrorTextView = view.findViewById(R.id.last_name_error);
+        emailErrorTextView =view.findViewById(R.id.email_error);
+        phoneNumberErrorTextView = view.findViewById(R.id.phone_number_error);
 
 
         rvPassengerDetail.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -84,6 +95,44 @@ public class CustomerDetailsFragment extends Fragment {
         countryCodeSpinner.setAdapter(adapter);
     }
 
+    public boolean validateForm() {
+        boolean isValid = true;
+
+        if (TextUtils.isEmpty(firstNameEditText.getText().toString())) {
+            firstNameErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            firstNameErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(lastNameEditText.getText().toString())) {
+            lastNameErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            lastNameErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(emailEditText.getText().toString())) {
+            emailErrorTextView.setText("*Required field");
+            emailErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches()) {
+            emailErrorTextView.setText("Invalid email format");
+            emailErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            emailErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(phoneNumberEditText.getText().toString())) {
+            phoneNumberErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            phoneNumberErrorTextView.setVisibility(View.GONE);
+        }
+
+        return isValid;
+    }
 
 
 
