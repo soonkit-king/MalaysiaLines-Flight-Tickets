@@ -42,6 +42,7 @@
                 android:background="@color/white"
                 android:textSize="17sp"
                 android:textStyle="bold"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:text="No"/>
 
             <Button
@@ -52,6 +53,7 @@
                 android:textColor="@color/red"
                 android:textSize="17sp"
                 android:textStyle="bold"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:text="Yes"/>
 
         </LinearLayout>
