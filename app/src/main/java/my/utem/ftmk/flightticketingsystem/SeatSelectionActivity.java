@@ -1,9 +1,8 @@
+// In SeatSelectionActivity
 package my.utem.ftmk.flightticketingsystem;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,33 +18,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fragment.AddOnsFragment;
 
 public class SeatSelectionActivity extends AppCompatActivity {
 
     private int rows = 34; // Example row count (admin-defined)
     private int seatsPerSide = 3; // Number of seats per side
-    private static final String PREF_NAME = "AddOnsPrefs";  // IMPORTANT: Use the AddOnsPrefs here
-    private static final String KEY_SELECTED_SEATS = "selectedSeats";
-
     private ImageButton btnBackToAddOns, done;
     private List<String> selectedSeats = new ArrayList<>(); // Store selected seats
     private Set<String> previouslySelectedSeats = new HashSet<>(); // Store previously selected seats
-    private int maxSeatsToSelect; // The maximum number of seats to select
-    private int seatsAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seat_selection);
 
-        // Retrieve the pax count from the intent
-        maxSeatsToSelect = getIntent().getIntExtra("pax", 1); // Default to 1 if not found
-        seatsAvailable = maxSeatsToSelect;
-
         // Retrieve previously selected seats from SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        previouslySelectedSeats = sharedPreferences.getStringSet(KEY_SELECTED_SEATS, new HashSet<>());
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        previouslySelectedSeats = sharedPreferences.getStringSet("selectedSeats", new HashSet<>());
+
 
         LinearLayout seatContainer = findViewById(R.id.seatContainer);
         LinearLayout rowLayouta = new LinearLayout(this);
@@ -75,8 +65,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 ImageView seat = createSeat(seatTag); // 1A, 1B, 1C - ROW NUMBER FIRST
                 if (previouslySelectedSeats.contains(seatTag)) {
                     seat.setImageResource(R.drawable.seat_icon_green); // Set to green if previously selected
-                    selectedSeats.add(seatTag); // Also update selectedSeats list to match the display
-                    seatsAvailable -= 1;
+                    selectedSeats.add(seatTag); //Also update selectedSeats list to match the display
                 }
                 rowLayout.addView(seat);
                 seatLetter++; // Increment to the next seat letter
@@ -99,8 +88,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 ImageView seat = createSeat(seatTag); // 1D, 1E, 1F - ROW NUMBER FIRST
                 if (previouslySelectedSeats.contains(seatTag)) {
                     seat.setImageResource(R.drawable.seat_icon_green); // Set to green if previously selected
-                    selectedSeats.add(seatTag); // Also update selectedSeats list to match the display
-                    seatsAvailable -= 1;
+                    selectedSeats.add(seatTag);//Also update selectedSeats list to match the display
                 }
                 rowLayout.addView(seat);
                 seatLetter++; // Increment to the next seat letter
@@ -134,16 +122,12 @@ public class SeatSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Store selected seats in SharedPreferences
-                SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putStringSet(KEY_SELECTED_SEATS, new HashSet<>(selectedSeats)); // Store as a Set
+                editor.putStringSet("selectedSeats", new HashSet<>(selectedSeats)); // Store as a Set
                 editor.apply();
 
-                Log.d("SeatSelection", "Saving seats: " + selectedSeats);
-                Intent intent = new Intent();
-                intent.putExtra("selectedSeats", new ArrayList<>(selectedSeats));
-                setResult(RESULT_OK, intent);
-
+                Toast.makeText(SeatSelectionActivity.this, "Seats Selected: " + selectedSeats, Toast.LENGTH_LONG).show();
                 finish();
             }
         });
@@ -170,22 +154,18 @@ public class SeatSelectionActivity extends AppCompatActivity {
             ImageView selectedSeat = (ImageView) view;
             if (!selectedSeats.contains(seatTag)) {
                 // Select seat
-                if (seatsAvailable > 0) {
-                    selectedSeat.setImageResource(R.drawable.seat_icon_green);
-                    selectedSeats.add(seatTag); // Add seat to list
-                    seatsAvailable -= 1; //Decrement seat available
-                } else {
-                    //Selection limit
-                    Toast.makeText(SeatSelectionActivity.this, "You can only select " + maxSeatsToSelect + " seats.", Toast.LENGTH_SHORT).show();
-                }
+                selectedSeat.setImageResource(R.drawable.seat_icon_green);
+                selectedSeats.add(seatTag); // Add seat to list
+                Toast.makeText(this, "Selected: " + seatTag, Toast.LENGTH_SHORT).show();
             } else {
                 // Deselect seat
                 selectedSeat.setImageResource(R.drawable.seat_icon_blue);
                 selectedSeats.remove(seatTag); // Remove seat from list
-                seatsAvailable += 1; //Increment seat available
+                Toast.makeText(this, "Deselected: " + seatTag, Toast.LENGTH_SHORT).show();
             }
         });
 
         return seat;
     }
+
 }
