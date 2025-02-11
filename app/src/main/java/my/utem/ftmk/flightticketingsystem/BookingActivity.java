@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -24,6 +26,8 @@ public class BookingActivity extends AppCompatActivity {
 
     private boolean isFragmentReplaced = false; // Track button state
     private Button btnNext;
+    private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
+    private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName;
     private static final int SEAT_SELECTION_REQUEST = 1;
@@ -34,6 +38,33 @@ public class BookingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
+      Fragment fragment = getSupportFragmentManager()
+                .findFragmentById(R.id.passanger_detail_fragment_container);
+        if (fragment != null) {
+            View fragmentView = fragment.getView();  // Get the fragment's root view
+            if (fragmentView != null) {
+                firstNameEditText = fragmentView.findViewById(R.id.first_name);
+                lastNameEditText = fragmentView.findViewById(R.id.last_name);
+                emailEditText = fragmentView.findViewById(R.id.email);
+                countryResidenceEditText = fragmentView.findViewById(R.id.country_residence);
+                phoneNumberEditText = fragmentView.findViewById(R.id.phone_number);
+                firstNameErrorTextView = fragmentView.findViewById(R.id.first_name_error);
+                lastNameErrorTextView = fragmentView.findViewById(R.id.last_name_error);
+                emailErrorTextView = fragmentView.findViewById(R.id.email_error);
+                phoneNumberErrorTextView = fragmentView.findViewById(R.id.phone_number_error);
+            }
+        }
+        //View fragmentView = fragment.getView();
+        /*  firstNameEditText = fragmentView.findViewById(R.id.first_name);
+        lastNameEditText = fragmentView.findViewById(R.id.last_name);
+        emailEditText = fragmentView.findViewById(R.id.email);
+        countryResidenceEditText = fragmentView.findViewById(R.id.country_residence);
+        phoneNumberEditText = fragmentView.findViewById(R.id.phone_number);
+        firstNameErrorTextView = fragmentView.findViewById(R.id.first_name_error);
+        lastNameErrorTextView = fragmentView.findViewById(R.id.last_name_error);
+        emailErrorTextView = fragmentView.findViewById(R.id.email_error);
+        phoneNumberErrorTextView = fragmentView.findViewById(R.id.phone_number_error);*/
+
 
         btnNext = findViewById(R.id.next_button);
         btnCloseOrBack = findViewById(R.id.close_button);
@@ -68,6 +99,7 @@ public class BookingActivity extends AppCompatActivity {
         });
 
         btnNext.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 if (!isFragmentReplaced) {
@@ -84,6 +116,7 @@ public class BookingActivity extends AppCompatActivity {
                     finish();
                 }
             }
+
         });
     }
 
