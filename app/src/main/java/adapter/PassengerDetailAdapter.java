@@ -1,6 +1,8 @@
 package adapter;
 
 import android.text.TextUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,9 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
         EditText firstName, lastName, dobDay, dobMonth, dobYear;
         EditText nationality, countryOfIssue, passportNumber;
         EditText expiryDay, expiryMonth, expiryYear;
+
+        // TextWatcher instances to avoid creating new ones every bind
+        MyTextWatcher firstNameWatcher, lastNameWatcher, nationalityWatcher, countryOfIssueWatcher, passportNumberWatcher, dobDayWatcher, dobMonthWatcher, dobYearWatcher, expiryDayWatcher, expiryMonthWatcher, expiryYearWatcher;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -150,8 +155,72 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
 
             return isValid;
         }
-
     }
+
+    // Custom TextWatcher to update passenger data directly
+    private class MyTextWatcher implements TextWatcher {
+        private final Passenger passenger;
+        private final String field;
+
+        public MyTextWatcher(Passenger passenger, String field) {
+            this.passenger = passenger;
+            this.field = field;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String value = s.toString();
+            switch (field) {
+                case "firstName":
+                    passenger.setFirstName(value);
+                    break;
+                case "lastName":
+                    passenger.setLastName(value);
+                    break;
+                case "nationality":
+                    passenger.setNationality(value);
+                    break;
+                case "countryOfIssue":
+                    passenger.setCountryOfIssue(value);
+                    break;
+                case "passportNumber":
+                    passenger.setPassportNumber(value);
+                    break;
+                case "dobDay":
+                    passenger.setDob(joinDateParts(value, getFieldValue(passenger, "dobMonth"), getFieldValue(passenger, "dobYear")));
+                    break;
+                case "dobMonth":
+                    passenger.setDob(joinDateParts(getFieldValue(passenger, "dobDay"), value, getFieldValue(passenger, "dobYear")));
+                    break;
+                case "dobYear":
+                    passenger.setDob(joinDateParts(getFieldValue(passenger, "dobDay"), getFieldValue(passenger, "dobMonth"), value));
+                    break;
+                case "expiryDay":
+                    passenger.setPassportExpiry(joinDateParts(value, getFieldValue(passenger, "expiryMonth"), getFieldValue(passenger, "expiryYear")));
+                    break;
+                case "expiryMonth":
+                    passenger.setPassportExpiry(joinDateParts(getFieldValue(passenger, "expiryDay"), value, getFieldValue(passenger, "expiryYear")));
+                    break;
+                case "expiryYear":
+                    passenger.setPassportExpiry(joinDateParts(getFieldValue(passenger, "expiryDay"), getFieldValue(passenger, "expiryMonth"), value));
+                    break;
+            }
+        }
+
+        private String joinDateParts(String day, String month, String year) {
+            if (day != null && !day.isEmpty() && month != null && !month.isEmpty() && year != null && !year.isEmpty()) {
+                return day + "/" + month + "/" + year;
+            }
+            return null;
+        }
 
     public boolean validateAllPassengers(RecyclerView recyclerView) {
         boolean allValid = true;
@@ -167,3 +236,23 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
     }
 
 }
+
+        private String getFieldValue(Passenger passenger, String field) {
+            switch (field) {
+                case "dobDay":
+                    return (passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3) ? passenger.getDateOfBirth().split("/")[0] : "";
+                case "dobMonth":
+                    return (passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3) ? passenger.getDateOfBirth().split("/")[1] : "";
+                case "dobYear":
+                    return (passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3) ? passenger.getDateOfBirth().split("/")[2] : "";
+                case "expiryDay":
+                    return (passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3) ? passenger.getPassportExpiry().split("/")[0] : "";
+                case "expiryMonth":
+                    return (passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3) ? passenger.getPassportExpiry().split("/")[1] : "";
+                case "expiryYear":
+                    return (passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3) ? passenger.getPassportExpiry().split("/")[2] : "";
+                default:
+                    return null;
+            }
+        }
+    }
