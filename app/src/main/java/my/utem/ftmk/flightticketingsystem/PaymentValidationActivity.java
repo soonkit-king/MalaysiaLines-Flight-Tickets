@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
@@ -82,6 +84,14 @@ public class PaymentValidationActivity extends AppCompatActivity {
             }
         }, 3000); // 3000ms = 3 seconds
         loadSharedPrefsData();
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Do nothing
+            }
+        });
+
     }
 
     private void animateDot(ImageView dot) {
