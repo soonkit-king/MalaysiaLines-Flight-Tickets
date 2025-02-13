@@ -1,6 +1,6 @@
 package my.utem.ftmk.flightticketingsystem;
 
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,11 +32,9 @@ public class BookingActivity extends AppCompatActivity {
     private Button btnNext;
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName, tvDepartureAirport, tvArrivalAirport, tvDepartureDatetime, tvArrivalDatetime, tvTotalPayment, tvPax;
-
     private FragmentManager fragmentManager;
 
-    private SharedPreferences sharedPreferences;
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +75,6 @@ public class BookingActivity extends AppCompatActivity {
             }
         });
 
-        sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
         assignFlightDetails();
 
         handleBackButton();
@@ -87,14 +84,14 @@ public class BookingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             // Get intent data from FlightAdapter dialog
-            int flightId = intent.getIntExtra("flightId", -1);
+            int flightId = intent.getIntExtra("flightId", 0);
             String departureAirport = intent.getStringExtra("departureAirport");
             String arrivalAirport = intent.getStringExtra("arrivalAirport");
             String duration = intent.getStringExtra("duration");
             String departureDate = intent.getStringExtra("departureDate");
             String departureTime = intent.getStringExtra("departureTime");
             int pax = intent.getIntExtra("pax", 0);
-            double priceRate = intent.getDoubleExtra("priceRate", -1);
+            double priceRate = intent.getDoubleExtra("priceRate", 0);
 
             // Process the data
             assert duration != null;
@@ -112,6 +109,7 @@ public class BookingActivity extends AppCompatActivity {
             tvPax.setText(pax + " pax");
 
             // Put into sharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(PrefKey.KEY_FLIGHT_ID, flightId);
             editor.putString(PrefKey.KEY_DEPARTURE_AIRPORT, departureAirport);

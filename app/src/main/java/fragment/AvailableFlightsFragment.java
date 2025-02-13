@@ -50,9 +50,10 @@ public class AvailableFlightsFragment extends Fragment {
 
     private void initializeFlightsInDatabase() {
         //****USE FIRST TIME TO CLEAR DATABASE ONLY*****
-        //SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //db.delete("flight", null, null);
-            // Insert sample flights
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        db.delete("flight", null, null);
+
+        // Insert sample flights
         dbHelper.insertFlight(
                 "Kuala Lumpur (KUL)", "Penang (PEN)",
                 "07:30", "08:40",
