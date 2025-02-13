@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,29 +34,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 
+import utils.PrefKey;
+
 public class CustomerDetailsFragment extends Fragment {
 
     private RecyclerView rvPassengerDetail;
     private PassengerDetailAdapter passengerDetailAdapter;
     private Spinner countryCodeSpinner;
-    private List<String> countryCodes = new ArrayList<>();
+    private final List<String> countryCodes = new ArrayList<>();
 
-    private List<Passenger> passengerList = new ArrayList<>();
-    private int pax = 1; // Default value
+    private final List<Passenger> passengerList = new ArrayList<>();
     private TextView first_name, last_name, email, country_residence, phone_number;
 
     private SharedPreferences sharedPreferences;
-    public static final String PREF_NAME = "CustomerDetails";
-    private static final String KEY_FIRST_NAME = "firstName";
-    private static final String KEY_LAST_NAME = "lastName";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_COUNTRY_RESIDENCE = "countryResidence";
-    private static final String KEY_PHONE_NUMBER = "phoneNumber";
-    private static final String KEY_COUNTRY_CODE = "countryCode";
-    private static final String KEY_PAX_COUNT = "paxCount"; // Store pax count
-    private static final String KEY_PASSENGER_DATA = "passengerData"; // Store passenger details (JSON)
-    private static final String KEY_COUNTRY_CODES = "countryCodes"; // Key for storing country codes
-
 
     public CustomerDetailsFragment() {
         // Required empty public constructor
@@ -82,7 +70,7 @@ public class CustomerDetailsFragment extends Fragment {
         phone_number = view.findViewById(R.id.phone_number);
         rvPassengerDetail.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
 
         // Clear the spinner adapter initially (Optional, but can help ensure a clean state)
         countryCodeSpinner.setAdapter(null);
@@ -96,6 +84,8 @@ public class CustomerDetailsFragment extends Fragment {
             fetchCountryCodes();
         }
 
+        // Default value
+        int pax = 1;
         if (getActivity() != null && getActivity().getIntent().hasExtra("pax")) {
             pax = getActivity().getIntent().getIntExtra("pax", 1);
             savePaxCount(pax); // Save the pax count
@@ -105,7 +95,6 @@ public class CustomerDetailsFragment extends Fragment {
         }
 
         generatePassengers(pax);
-
     }
 
     @Override
@@ -131,17 +120,17 @@ public class CustomerDetailsFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Save text field data
-        editor.putString(KEY_FIRST_NAME, first_name.getText().toString());
-        editor.putString(KEY_LAST_NAME, last_name.getText().toString());
-        editor.putString(KEY_EMAIL, email.getText().toString());
-        editor.putString(KEY_COUNTRY_RESIDENCE, country_residence.getText().toString());
+        editor.putString(PrefKey.KEY_FIRST_NAME, first_name.getText().toString());
+        editor.putString(PrefKey.KEY_LAST_NAME, last_name.getText().toString());
+        editor.putString(PrefKey.KEY_EMAIL, email.getText().toString());
+        editor.putString(PrefKey.KEY_COUNTRY_RESIDENCE, country_residence.getText().toString());
 
         // Save the phone number (without country code)
-        editor.putString(KEY_PHONE_NUMBER, phone_number.getText().toString());
+        editor.putString(PrefKey.KEY_PHONE_NUMBER, phone_number.getText().toString());
 
         // Save the selected country code.
         String selectedCountryCode = (String) countryCodeSpinner.getSelectedItem();
-        editor.putString(KEY_COUNTRY_CODE, selectedCountryCode);
+        editor.putString(PrefKey.KEY_COUNTRY_CODE, selectedCountryCode);
 
         // Convert passenger list to JSON and save it
         try {
@@ -159,7 +148,7 @@ public class CustomerDetailsFragment extends Fragment {
 
                 jsonArray.put(passengerJson);
             }
-            editor.putString(KEY_PASSENGER_DATA, jsonArray.toString());
+            editor.putString(PrefKey.KEY_PASSENGER_DATA, jsonArray.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -167,18 +156,17 @@ public class CustomerDetailsFragment extends Fragment {
         editor.apply();
     }
 
-
     private void loadSavedData() {
-        first_name.setText(sharedPreferences.getString(KEY_FIRST_NAME, ""));
-        last_name.setText(sharedPreferences.getString(KEY_LAST_NAME, ""));
-        email.setText(sharedPreferences.getString(KEY_EMAIL, ""));
-        country_residence.setText(sharedPreferences.getString(KEY_COUNTRY_RESIDENCE, ""));
+        first_name.setText(sharedPreferences.getString(PrefKey.KEY_FIRST_NAME, ""));
+        last_name.setText(sharedPreferences.getString(PrefKey.KEY_LAST_NAME, ""));
+        email.setText(sharedPreferences.getString(PrefKey.KEY_EMAIL, ""));
+        country_residence.setText(sharedPreferences.getString(PrefKey.KEY_COUNTRY_RESIDENCE, ""));
 
         // Load the phone number
-        phone_number.setText(sharedPreferences.getString(KEY_PHONE_NUMBER, ""));
+        phone_number.setText(sharedPreferences.getString(PrefKey.KEY_PHONE_NUMBER, ""));
 
         // Load the selected country code
-        String savedCountryCode = sharedPreferences.getString(KEY_COUNTRY_CODE, null);
+        String savedCountryCode = sharedPreferences.getString(PrefKey.KEY_COUNTRY_CODE, null);
         if (savedCountryCode != null) {
             int spinnerPosition = countryCodes.indexOf(savedCountryCode);
             if (spinnerPosition >= 0) {
@@ -188,7 +176,7 @@ public class CustomerDetailsFragment extends Fragment {
 
 
         // Load passenger data from JSON
-        String passengerJsonString = sharedPreferences.getString(KEY_PASSENGER_DATA, null);
+        String passengerJsonString = sharedPreferences.getString(PrefKey.KEY_PASSENGER_DATA, null);
         if (passengerJsonString != null) {
             try {
                 JSONArray jsonArray = new JSONArray(passengerJsonString);
@@ -196,14 +184,15 @@ public class CustomerDetailsFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1),
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -216,11 +205,10 @@ public class CustomerDetailsFragment extends Fragment {
 
     }
 
-
     private void generatePassengers(int count) {
         passengerList.clear();
         //Load passenger data from SharedPreferences
-        String passengerJsonString = sharedPreferences.getString(KEY_PASSENGER_DATA, null);
+        String passengerJsonString = sharedPreferences.getString(PrefKey.KEY_PASSENGER_DATA, null);
 
         if (passengerJsonString != null) {
             try {
@@ -229,14 +217,15 @@ public class CustomerDetailsFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1),
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -248,11 +237,9 @@ public class CustomerDetailsFragment extends Fragment {
             passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
             rvPassengerDetail.setAdapter(passengerDetailAdapter);
 
-        }else {
-
-
+        } else {
             for (int i = 0; i < count; i++) {
-                passengerList.add(new Passenger("", "", "", "", "", "", "", ""));
+                passengerList.add(new Passenger(-1, "", "", "", "", "", "", "", ""));
             }
             passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
             rvPassengerDetail.setAdapter(passengerDetailAdapter);
@@ -331,13 +318,14 @@ public class CustomerDetailsFragment extends Fragment {
     private void saveCountryCodesToSharedPreferences() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Set<String> countryCodeSet = new HashSet<>(countryCodes);
-        editor.putStringSet(KEY_COUNTRY_CODES, countryCodeSet);
+        editor.putStringSet(PrefKey.KEY_COUNTRY_CODES, countryCodeSet);
         editor.apply();
     }
 
+
     // Load country codes from SharedPreferences
     private boolean loadCountryCodesFromSharedPreferences() {
-        Set<String> countryCodeSet = sharedPreferences.getStringSet(KEY_COUNTRY_CODES, null);
+        Set<String> countryCodeSet = sharedPreferences.getStringSet(PrefKey.KEY_COUNTRY_CODES, null);
         if (countryCodeSet != null) {
             countryCodes.clear();
             countryCodes.addAll(countryCodeSet);
@@ -366,14 +354,11 @@ public class CustomerDetailsFragment extends Fragment {
     // Pax count management in Shared Preferences
     private void savePaxCount(int count) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_PAX_COUNT, count);
+        editor.putInt(PrefKey.KEY_PAX_COUNT, count);
         editor.apply();
     }
 
     private int getPaxCount() {
-        return sharedPreferences.getInt(KEY_PAX_COUNT, 1); // Default to 1 if not found
+        return sharedPreferences.getInt(PrefKey.KEY_PAX_COUNT, 1); // Default to 1 if not found
     }
-
-
-
 }

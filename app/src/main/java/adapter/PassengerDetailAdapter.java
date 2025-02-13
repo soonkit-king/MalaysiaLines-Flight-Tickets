@@ -223,13 +223,13 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
                     passenger.setPassportNumber(value);
                     break;
                 case "dobDay":
-                    passenger.setDob(joinDateParts(value, getFieldValue(passenger, "dobMonth"), getFieldValue(passenger, "dobYear")));
+                    passenger.setDateOfBirth(joinDateParts(value, getFieldValue(passenger, "dobMonth"), getFieldValue(passenger, "dobYear")));
                     break;
                 case "dobMonth":
-                    passenger.setDob(joinDateParts(getFieldValue(passenger, "dobDay"), value, getFieldValue(passenger, "dobYear")));
+                    passenger.setDateOfBirth(joinDateParts(getFieldValue(passenger, "dobDay"), value, getFieldValue(passenger, "dobYear")));
                     break;
                 case "dobYear":
-                    passenger.setDob(joinDateParts(getFieldValue(passenger, "dobDay"), getFieldValue(passenger, "dobMonth"), value));
+                    passenger.setDateOfBirth(joinDateParts(getFieldValue(passenger, "dobDay"), getFieldValue(passenger, "dobMonth"), value));
                     break;
                 case "expiryDay":
                     passenger.setPassportExpiry(joinDateParts(value, getFieldValue(passenger, "expiryMonth"), getFieldValue(passenger, "expiryYear")));

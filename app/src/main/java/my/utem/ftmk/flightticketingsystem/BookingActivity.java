@@ -1,5 +1,6 @@
 package my.utem.ftmk.flightticketingsystem;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -19,17 +19,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.List;
+
 import fragment.AddOnsFragment;
 import fragment.CustomerDetailsFragment;
+import utils.Conversions;
+import utils.PrefKey;
 
 public class BookingActivity extends AppCompatActivity {
 
     private boolean isFragmentReplaced = false;
     private Button btnNext;
     private ImageButton btnCloseOrBack;
-    private TextView tvBookingSectionName, tvPax;
-    private int pax = 0;
+    private TextView tvBookingSectionName, tvDepartureAirport, tvArrivalAirport, tvDepartureDatetime, tvArrivalDatetime, tvTotalPayment, tvPax;
+
     private FragmentManager fragmentManager;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +44,16 @@ public class BookingActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         btnNext = findViewById(R.id.next_button);
-        btnCloseOrBack = findViewById(R.id.close_button);
+        btnCloseOrBack = findViewById(R.id.close_or_back_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
+        tvDepartureAirport = findViewById(R.id.tvStartAirport);
+        tvArrivalAirport = findViewById(R.id.tvEndAirport);
+        tvDepartureDatetime = findViewById(R.id.tvDepartureDatetime);
+        tvArrivalDatetime = findViewById(R.id.tvArrivalDatetime);
+        tvTotalPayment = findViewById(R.id.tvTotal);
         tvPax = findViewById(R.id.tvPax);
 
-        pax = getIntent().getIntExtra("pax", 1);
+        int pax = getIntent().getIntExtra("pax", 1);
         tvPax.setText(pax + " pax");
 
         // Load the initial fragment (CustomerDetailsFragment)
@@ -66,7 +77,51 @@ public class BookingActivity extends AppCompatActivity {
             }
         });
 
+        sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
+        assignFlightDetails();
+
         handleBackButton();
+    }
+
+    private void assignFlightDetails() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            // Get intent data from FlightAdapter dialog
+            int flightId = intent.getIntExtra("flightId", -1);
+            String departureAirport = intent.getStringExtra("departureAirport");
+            String arrivalAirport = intent.getStringExtra("arrivalAirport");
+            String duration = intent.getStringExtra("duration");
+            String departureDate = intent.getStringExtra("departureDate");
+            String departureTime = intent.getStringExtra("departureTime");
+            int pax = intent.getIntExtra("pax", 0);
+            double priceRate = intent.getDoubleExtra("priceRate", -1);
+
+            // Process the data
+            assert duration != null;
+            List<String> datetimes = Conversions.calculateFlightDatetimes(departureDate, departureTime, duration);
+            String departureDatetime = datetimes.get(0);
+            String arrivalDatetime = datetimes.get(1);
+            double totalPayment = Conversions.calculateTotalPayment(pax, priceRate);
+
+            // Add into textviews
+            tvDepartureAirport.setText(departureAirport);
+            tvArrivalAirport.setText(arrivalAirport);
+            tvDepartureDatetime.setText(departureDatetime);
+            tvArrivalDatetime.setText(arrivalDatetime);
+            tvTotalPayment.setText(String.format("RM %.2f", totalPayment)); // Format to 2 decimal places
+            tvPax.setText(String.valueOf(pax));
+
+            // Put into sharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(PrefKey.KEY_FLIGHT_ID, flightId);
+            editor.putString(PrefKey.KEY_DEPARTURE_AIRPORT, departureAirport);
+            editor.putString(PrefKey.KEY_ARRIVAL_AIRPORT, arrivalAirport);
+            editor.putString(PrefKey.KEY_DEPARTURE_DATETIME, departureDatetime);
+            editor.putString(PrefKey.KEY_ARRIVAL_DATETIME, arrivalDatetime);
+            editor.putFloat(PrefKey.KEY_TOTAL_PAYMENT, (float) totalPayment); // Use putFloat since there's no putDouble
+            editor.putInt(PrefKey.KEY_PAX, pax);
+            editor.apply(); // Apply changes asynchronously
+        }
     }
 
     private void handleBackButton() {
@@ -142,7 +197,14 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     private void clearCustomerDetails() {
-        SharedPreferences sharedPreferences = getSharedPreferences(CustomerDetailsFragment.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    private void clearFlightDetails() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
@@ -164,6 +226,7 @@ public class BookingActivity extends AppCompatActivity {
 
         yesButton.setOnClickListener(v -> {
             clearCustomerDetails();
+            clearFlightDetails();
             finish();
             dialog.dismiss();
         });

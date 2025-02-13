@@ -131,8 +131,15 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
                 Toast.makeText(context, "Please select a date!", Toast.LENGTH_SHORT).show();
             } else {
                 // Convert date + time + duration into datetime values
-                List<String> datetimes = Conversions.compileBoardingDatetimes(selectedDate[0], flight.getDepartureTime(), flight.getDuration());
-                Intent intent = getIntent(flight, selectedPax, datetimes);
+                Intent intent = new Intent(context, BookingActivity.class);
+                intent.putExtra("flightId", flight.getFlightId());
+                intent.putExtra("departureAirport", flight.getDepartureAirport());
+                intent.putExtra("arrivalAirport", flight.getArrivalAirport());
+                intent.putExtra("duration", flight.getDuration());
+                intent.putExtra("departureDate", selectedDate[0]);
+                intent.putExtra("departureTime", flight.getDepartureTime());
+                intent.putExtra("pax", selectedPax);
+                intent.putExtra("priceRate", flight.getPriceRate());
 
                 context.startActivity(intent);
                 dialog.dismiss();
@@ -142,18 +149,4 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         dialog.show();
     }
 
-
-    private @NonNull Intent getIntent(Flight flight, int selectedPax, List<String> datetimes) {
-        double totalPayment = Conversions.calculateTotalPayment(selectedPax, flight.getPriceRate());
-
-        // Create Intent to navigate to AddOnActivity
-        Intent intent = new Intent(context, BookingActivity.class);
-        intent.putExtra("departureAirport", flight.getDepartureAirport());
-        intent.putExtra("arrivalAirport", flight.getArrivalAirport());
-        intent.putExtra("departureDatetime", datetimes.get(0));
-        intent.putExtra("arrivalDatetime", datetimes.get(1));
-        intent.putExtra("pax", selectedPax);
-        intent.putExtra("totalPayment", totalPayment);
-        return intent;
-    }
 }

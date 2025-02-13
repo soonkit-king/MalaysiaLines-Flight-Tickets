@@ -16,27 +16,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import model.Passenger;
+import sqlite.DatabaseHelper;
+import utils.PrefKey;
 
 public class PaymentValidationActivity extends AppCompatActivity {
     private Handler handler = new Handler();
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
 
     private SharedPreferences sharedPreferences;
-    public static final String PREF_NAME = "CustomerDetails";
-    private static final String KEY_FIRST_NAME = "firstName";
-    private static final String KEY_LAST_NAME = "lastName";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_COUNTRY_RESIDENCE = "countryResidence";
-    private static final String KEY_PHONE_NUMBER = "phoneNumber";
-    private static final String KEY_COUNTRY_CODE = "countryCode";
-    private static final String KEY_PAX_COUNT = "paxCount"; // Store pax count
-    private static final String KEY_PASSENGER_DATA = "passengerData"; // Store passenger details (JSON)
-    private static final String KEY_COUNTRY_CODES = "countryCodes"; // Key for storing country codes
     private static String fullPhoneNumber;
 
 
@@ -79,8 +72,13 @@ public class PaymentValidationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Navigate to BookingSuccessActivity after 3 seconds
-                startActivity(new Intent(PaymentValidationActivity.this, BookingSuccessActivity.class));
-                finish();
+
+                Intent intent = new Intent(PaymentValidationActivity.this, BookingSuccessActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // Ensure PaymentValidationActivity is removed from the stack
+
+
             }
         }, 3000); // 3000ms = 3 seconds
         loadSharedPrefsData();
@@ -121,32 +119,63 @@ public class PaymentValidationActivity extends AppCompatActivity {
 
     private void loadSharedPrefsData() {
         // Retrieve SharedPreferences data and store in variables
-        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, MODE_PRIVATE);
 
         // Retrieve individual values
-        String firstName = sharedPreferences.getString(KEY_FIRST_NAME, "");
-        String lastName = sharedPreferences.getString(KEY_LAST_NAME, "");
-        String email = sharedPreferences.getString(KEY_EMAIL, "");
-        String countryResidence = sharedPreferences.getString(KEY_COUNTRY_RESIDENCE, "");
-        String phoneNumber = sharedPreferences.getString(KEY_PHONE_NUMBER, "");
-        String countryCode = sharedPreferences.getString(KEY_COUNTRY_CODE, "");
-        int paxCount = sharedPreferences.getInt(KEY_PAX_COUNT, 0); // Default to 0 if not found
-        String passengerJsonString = sharedPreferences.getString(KEY_PASSENGER_DATA, null);
+        // Flight and add-ons details
+        int flightId = sharedPreferences.getInt(PrefKey.KEY_FLIGHT_ID, -1);
+        String departureDatetime = sharedPreferences.getString(PrefKey.KEY_DEPARTURE_DATETIME, "");
+        String arrivalDatetime = sharedPreferences.getString(PrefKey.KEY_ARRIVAL_DATETIME, "");
+        Set<String> seatNo = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>());
+        boolean refund = sharedPreferences.getBoolean(PrefKey.KEY_REFUND_GUARANTEE, false);
+        double totalPayment = sharedPreferences.getFloat(PrefKey.KEY_TOTAL_PAYMENT, -1);
+
+        // Customer details
+        String firstName = sharedPreferences.getString(PrefKey.KEY_FIRST_NAME, "");
+        String lastName = sharedPreferences.getString(PrefKey.KEY_LAST_NAME, "");
+        String email = sharedPreferences.getString(PrefKey.KEY_EMAIL, "");
+        String countryResidence = sharedPreferences.getString(PrefKey.KEY_COUNTRY_RESIDENCE, "");
+        String phoneNumber = sharedPreferences.getString(PrefKey.KEY_PHONE_NUMBER, "");
+        String countryCode = sharedPreferences.getString(PrefKey.KEY_COUNTRY_CODE, "");
+        int pax = sharedPreferences.getInt(PrefKey.KEY_PAX_COUNT, 0); // Default to 0 if not found
+        String passengerJsonString = sharedPreferences.getString(PrefKey.KEY_PASSENGER_DATA, null);
 
         // Combine country code and phone number
         String fullPhoneNumber = countryCode + phoneNumber; // You can change the separator if needed
 
-        // If you need the country codes from SharedPreferences
-        Set<String> countryCodes = sharedPreferences.getStringSet(KEY_COUNTRY_CODES, new HashSet<>());
-
         // If passenger data exists in SharedPreferences, convert it to a list of Passenger objects
-        List<Passenger> passengerList = new ArrayList<>();
+        List<Passenger> passengerList = decodeJsonPassenger(passengerJsonString);
+
+        // Insert into database
+        dbHelper.insertCompleteBooking(
+            flightId,
+            pax,
+            departureDatetime,
+            arrivalDatetime,
+            seatNo,
+            refund,
+            totalPayment,
+            // Contact details
+            firstName,
+            lastName,
+            email,
+            countryResidence,
+            countryCode,
+            fullPhoneNumber,
+            // Passenger list
+            passengerList
+        );
+    }
+
+    private List<Passenger> decodeJsonPassenger(String passengerJsonString) {
+        List<Passenger> list = Collections.emptyList();
         if (passengerJsonString != null) {
             try {
                 JSONArray jsonArray = new JSONArray(passengerJsonString);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
+                            passengerJson.getInt("bookingId"),
                             passengerJson.getString("firstName"),
                             passengerJson.getString("lastName"),
                             passengerJson.getString("nationality"),
@@ -156,18 +185,14 @@ public class PaymentValidationActivity extends AppCompatActivity {
                             passengerJson.getString("dateOfBirth"),
                             passengerJson.getString("passportExpiry")
                     );
-                    passengerList.add(passenger);
+                    list.add(passenger);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
-        // Here, you can now use these variables (like `firstName`, `lastName`, etc.) to insert into your local database
-        // Example usage for inserting into a local database (assuming you have a method like `insertToDatabase`):
-        // insertToDatabase(firstName, lastName, email, countryResidence, phoneNumber, countryCode, paxCount, passengerList);
+        return list;
     }
-
 
 
 }

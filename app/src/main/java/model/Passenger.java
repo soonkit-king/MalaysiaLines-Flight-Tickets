@@ -2,6 +2,7 @@ package model;
 
 public class Passenger {
 
+    private int bookingId;
     private String firstName;
     private String lastName;
     private String nationality;
@@ -15,7 +16,8 @@ public class Passenger {
         // Default constructor
     }
 
-    public Passenger(String firstName, String lastName, String nationality, String countryOfIssue, String passportNumber, String gender, String dateOfBirth, String passportExpiry) {
+    public Passenger(int bookingId, String firstName, String lastName, String nationality, String countryOfIssue, String passportNumber, String gender, String dateOfBirth, String passportExpiry) {
+        this.bookingId = bookingId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationality = nationality;
@@ -27,67 +29,30 @@ public class Passenger {
     }
 
     // Getters and setters for all fields
-    public String getFirstName() {
-        return firstName;
-    }
+    public int getBookingId() { return bookingId; }
+    public void setBookingId(int bookingId) { this.bookingId = bookingId; }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public String getNationality() { return nationality; }
+    public void setNationality(String nationality) { this.nationality = nationality; }
 
-    public String getNationality() {
-        return nationality;
-    }
+    public String getCountryOfIssue() { return countryOfIssue; }
+    public void setCountryOfIssue(String countryOfIssue) { this.countryOfIssue = countryOfIssue; }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
+    public String getPassportNumber() { return passportNumber; }
+    public void setPassportNumber(String passportNumber) { this.passportNumber = passportNumber; }
 
-    public String getCountryOfIssue() {
-        return countryOfIssue;
-    }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
-    public void setCountryOfIssue(String countryOfIssue) {
-        this.countryOfIssue = countryOfIssue;
-    }
+    public String getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public void setPassportNumber(String passportNumber) {
-        this.passportNumber = passportNumber;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDob(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getPassportExpiry() {
-        return passportExpiry;
-    }
-
-    public void setPassportExpiry(String passportExpiry) {
-        this.passportExpiry = passportExpiry;
-    }
+    public String getPassportExpiry() { return passportExpiry; }
+    public void setPassportExpiry(String passportExpiry) { this.passportExpiry = passportExpiry; }
 }

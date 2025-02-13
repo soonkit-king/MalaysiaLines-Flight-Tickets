@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.List;
+
+import model.Passenger;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "flight_booking.db";
@@ -43,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "first_name TEXT, " +
                 "last_name TEXT, " +
                 "email TEXT, " +
-                "residence_country TEXT, " +
+                "country_residence TEXT, " +
                 "country_code TEXT, " +
                 "phone_number TEXT, " +
                 "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
@@ -53,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "booking_id INTEGER, " +
                 "first_name TEXT, " +
                 "last_name TEXT, " +
+                "gender TEXT, " +
                 "date_of_birth TEXT, " +
                 "nationality TEXT, " +
                 "issue_country TEXT, " +
@@ -70,36 +75,108 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public Cursor getFlights() {
+    public Cursor getAllFlights() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM flight", null);
     }
 
-    public boolean deleteFlight(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete("flight", "flight_id=?", new String[]{String.valueOf(id)});
-        return result > 0;
+    public Cursor getAllBookingHistory() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT b.*, f.departure_airport, f.arrival_airport FROM booking b LEFT JOIN flight f ON b.flight_id = f.flight_id", null);
     }
 
-    // CRUD operations for booking
-    public boolean insertBooking(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
+    public void insertFlight(String departureAirport, String arrivalAirport,
+                             String departureTime, String arrivalTime,
+                             String flightDuration, double priceRate) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("flight_id", flightId);
-        values.put("pax", pax);
-        values.put("departure_datetime", depDatetime);
-        values.put("arrival_datetime", arrDatetime);
-        values.put("seat_no", seatNo);
-        values.put("refund_guarantee", refund);
-        values.put("total_payment", payment);
-        long result = db.insert("booking", null, values);
-        return result != -1;
+
+        values.put("departure_airport", departureAirport);
+        values.put("arrival_airport", arrivalAirport);
+        values.put("departure_time", departureTime);
+        values.put("arrival_time", arrivalTime);
+        values.put("flight_duration", flightDuration);
+        values.put("price_rate", priceRate);
+
+        // Insert the row and return the primary key value of the new row
+        long newRowId = db.insert("flight", null, values);
+
+        // Close the database connection
+        db.close();
     }
 
-    public Cursor getBookings() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM booking", null);
-    }
+    public boolean insertCompleteBooking(
+            int flightId,
+            int pax,
+            String departureDatetime,
+            String arrivalDatetime,
+            String seatNo,
+            boolean refundGuarantee,
+            double totalPayment,
+            // Contact details
+            String firstName,
+            String lastName,
+            String email,
+            String countryResidence,
+            String countryCode,
+            String phoneNumber,
+            // Passenger list
+            List<Passenger> passengers
+    ) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-    // CRUD operations for contact and passenger follow the same pattern
+        try {
+            db.beginTransaction();
+
+            // 1. Insert booking first
+            ContentValues bookingValues = new ContentValues();
+            bookingValues.put("flight_id", flightId);
+            bookingValues.put("pax", pax);
+            bookingValues.put("departure_datetime", departureDatetime);
+            bookingValues.put("arrival_datetime", arrivalDatetime);
+            bookingValues.put("seat_no", seatNo);
+            bookingValues.put("refund_guarantee", refundGuarantee);
+            bookingValues.put("total_payment", totalPayment);
+            
+            int bookingId = (int) db.insert("booking", null, bookingValues);
+
+            // 2. Insert contact information
+            ContentValues contactValues = new ContentValues();
+            contactValues.put("booking_id", bookingId);
+            contactValues.put("first_name", firstName);
+            contactValues.put("last_name", lastName);
+            contactValues.put("email", email);
+            contactValues.put("country_residence", countryResidence);
+            contactValues.put("country_code", countryCode);
+            contactValues.put("phone_number", phoneNumber);
+
+            db.insert("contact", null, contactValues);
+
+            // 3. Insert all passengers
+            for (Passenger passenger : passengers) {
+                passenger.setBookingId(bookingId);
+                ContentValues passengerValues = new ContentValues();
+                passengerValues.put("booking_id", passenger.getBookingId());
+                passengerValues.put("first_name", passenger.getFirstName());
+                passengerValues.put("last_name", passenger.getLastName());
+                passengerValues.put("gender", passenger.getGender());
+                passengerValues.put("date_of_birth", passenger.getDateOfBirth());
+                passengerValues.put("nationality", passenger.getNationality());
+                passengerValues.put("issue_country", passenger.getCountryOfIssue());
+                passengerValues.put("passport_number", passenger.getPassportNumber());
+                passengerValues.put("passport_expiry_date", passenger.getPassportExpiry());
+
+                db.insert("passenger", null, passengerValues);
+            }
+
+            db.setTransactionSuccessful();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package model;
 
-public class Booking {
+public class BookingHistory {
+    private int bookingId;
     private String departureAirport;
     private String arrivalAirport;
     private String departureDatetime;
@@ -11,7 +12,8 @@ public class Booking {
     private double totalPayment;
 
     // Constructor (optional, but recommended)
-    public Booking(String departureAirport, String arrivalAirport, String departureDatetime, String arrivalDatetime, String seatNo, boolean hasRefundGuarantee, int pax, double totalPayment) {
+    public BookingHistory(int bookingId, String departureAirport, String arrivalAirport, String departureDatetime, String arrivalDatetime, String seatNo, boolean hasRefundGuarantee, int pax, double totalPayment) {
+        this.bookingId = bookingId;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departureDatetime = departureDatetime;
@@ -23,6 +25,10 @@ public class Booking {
     }
 
     // Getters
+    public int getBookingId() {
+        return bookingId;
+    }
+
     public String getDepartureAirport() {
         return departureAirport;
     }
@@ -56,6 +62,10 @@ public class Booking {
     }
 
     // Setters
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public void setDepartureAirport(String departureAirport) {
         this.departureAirport = departureAirport;
     }

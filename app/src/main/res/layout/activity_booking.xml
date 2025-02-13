@@ -15,12 +15,12 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/baseline_close_24" />
+            <ImageButton
+                android:id="@+id/close_or_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/baseline_close_24" />
 
         <TextView
             android:id="@+id/tvBookingSectionName"
@@ -199,14 +199,15 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="RM200.99"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tvTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="RM200.99"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         <Button
             android:id="@+id/next_button"
