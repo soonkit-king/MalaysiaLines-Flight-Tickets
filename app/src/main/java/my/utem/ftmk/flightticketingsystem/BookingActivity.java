@@ -1,89 +1,171 @@
 package my.utem.ftmk.flightticketingsystem;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import sqlite.DatabaseHelper;
 import fragment.AddOnsFragment;
 import fragment.CustomerDetailsFragment;
-import model.Passenger;
 
 public class BookingActivity extends AppCompatActivity {
 
     private boolean isFragmentReplaced = false;
     private Button btnNext;
     private ImageButton btnCloseOrBack;
-    private TextView tvBookingSectionName;
-    private DatabaseHelper databaseHelper; // Database instance
+    private TextView tvBookingSectionName, tvPax;
+    private int pax = 0;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
 
-        databaseHelper = new DatabaseHelper(this); // Initialize database helper
+        fragmentManager = getSupportFragmentManager();
         btnNext = findViewById(R.id.next_button);
-        btnCloseOrBack = findViewById(R.id.close_or_back_button);
+        btnCloseOrBack = findViewById(R.id.close_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
+        tvPax = findViewById(R.id.tvPax);
 
-        replaceFragment(new CustomerDetailsFragment());
-        btnNext.setText("Continue to add-ons");
-        isFragmentReplaced = false;
+        pax = getIntent().getIntExtra("pax", 1);
+        tvPax.setText(pax + " pax");
 
-        btnCloseOrBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isFragmentReplaced) {
-                    finish();
-                } else {
-                    replaceFragment(new CustomerDetailsFragment());
-                    btnNext.setText("Continue to add-ons");
-                    tvBookingSectionName.setText("Passenger details");
-                    btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(BookingActivity.this, R.drawable.baseline_close_24));
-                    isFragmentReplaced = false;
-                }
+        // Load the initial fragment (CustomerDetailsFragment)
+        if (savedInstanceState == null) {
+            loadInitialFragment();
+        }
+
+        btnCloseOrBack.setOnClickListener(v -> {
+            if (!isFragmentReplaced) {
+                showConfirmDialog(); // Show exit confirmation
+            } else {
+                switchToCustomerDetails();
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(v -> {
+            if (!isFragmentReplaced) {
+                switchToAddOns();
+            } else {
+                proceedToPayment();
+            }
+        });
+
+        handleBackButton();
+    }
+
+    private void handleBackButton() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View v) {
+            public void handleOnBackPressed() {
                 if (!isFragmentReplaced) {
-                    replaceFragment(new AddOnsFragment());
-                    btnNext.setText("Proceed to Payment");
-                    tvBookingSectionName.setText("Add-ons");
-                    btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(BookingActivity.this, R.drawable.baseline_arrow_back_ios_24));
-                    isFragmentReplaced = true;
+                    showConfirmDialog();
                 } else {
-                    //saveBookingToDatabase(); // Save booking before proceeding
+                    switchToCustomerDetails();
                 }
             }
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("isFragmentReplaced", isFragmentReplaced);
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+    private void loadInitialFragment() {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.passanger_detail_fragment_container, fragment);
+        CustomerDetailsFragment customerDetailsFragment = new CustomerDetailsFragment();
+        transaction.add(R.id.passanger_detail_fragment_container, customerDetailsFragment, "CustomerDetails");
+        transaction.commit();
+    }
+
+    private void switchToAddOns() {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        Fragment customerFragment = fragmentManager.findFragmentByTag("CustomerDetails");
+        if (customerFragment != null) {
+            transaction.hide(customerFragment);
+        }
+
+        AddOnsFragment addOnsFragment = (AddOnsFragment) fragmentManager.findFragmentByTag("AddOns");
+        if (addOnsFragment == null) {
+            addOnsFragment = new AddOnsFragment();
+            transaction.add(R.id.passanger_detail_fragment_container, addOnsFragment, "AddOns");
+        } else {
+            transaction.show(addOnsFragment);
+        }
+
         transaction.addToBackStack(null);
         transaction.commit();
+
+        btnNext.setText("Proceed to Payment");
+        tvBookingSectionName.setText("Add-ons");
+        btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_arrow_back_ios_24));
+        isFragmentReplaced = true;
+    }
+
+    private void switchToCustomerDetails() {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        Fragment addOnsFragment = fragmentManager.findFragmentByTag("AddOns");
+        if (addOnsFragment != null) {
+            transaction.hide(addOnsFragment);
+        }
+
+        Fragment customerFragment = fragmentManager.findFragmentByTag("CustomerDetails");
+        if (customerFragment != null) {
+            transaction.show(customerFragment);
+        }
+
+        transaction.commit();
+
+        btnNext.setText("Continue to add-ons");
+        tvBookingSectionName.setText("Passenger details");
+        btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_close_24));
+        isFragmentReplaced = false;
+    }
+
+    private void proceedToPayment() {
+        Intent intent = new Intent(BookingActivity.this, PaymentValidationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void clearCustomerDetails() {
+        SharedPreferences sharedPreferences = getSharedPreferences(CustomerDetailsFragment.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_confirm, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button noButton = dialogView.findViewById(R.id.noButton);
+        Button yesButton = dialogView.findViewById(R.id.yesButton);
+
+        noButton.setOnClickListener(v -> dialog.dismiss());
+
+        yesButton.setOnClickListener(v -> {
+            clearCustomerDetails();
+            finish();
+            dialog.dismiss();
+        });
     }
 }

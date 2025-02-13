@@ -372,4 +372,6 @@ public class CustomerDetailsFragment extends Fragment {
         return sharedPreferences.getInt(KEY_PAX_COUNT, 1); // Default to 1 if not found
     }
 
+
+
 }
