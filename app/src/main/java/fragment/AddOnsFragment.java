@@ -24,19 +24,13 @@ import java.util.Set;
 
 import my.utem.ftmk.flightticketingsystem.R;
 import my.utem.ftmk.flightticketingsystem.SeatSelectionActivity;
+import utils.PrefKey;
 
 public class AddOnsFragment extends Fragment {
 
     private Button btnChooseSeat; // Declare btnChooseSeat as a member variable
     private List<String> selectedSeats = new ArrayList<>();
     private SwitchCompat switchRefundGuarantee; // Declare the switch
-
-    private static final String PREF_NAME = "AddOnsPrefs"; // Separate preference file for Addons
-    private static final String CUSTOMER_PREF_NAME = "CustomerDetails"; // Use separate name for CustomerDetails SharedPreferences
-    private static final String KEY_REFUND_GUARANTEE = "refundGuarantee";
-    private static final String KEY_SELECTED_SEATS = "selectedSeats";  // Key for storing selected seats
-    private static final int SEAT_SELECTION_REQUEST_CODE = 1; // Request code for seat selection activity
-    private static final String KEY_PAX_COUNT = "paxCount"; // Key to retrieve pax count
 
     @Nullable
     @Override
@@ -73,20 +67,20 @@ public class AddOnsFragment extends Fragment {
         Intent intent = new Intent(requireActivity(), SeatSelectionActivity.class);
 
         // Get the pax count from CustomerDetails SharedPreferences
-        SharedPreferences customerPrefs = requireActivity().getSharedPreferences(CUSTOMER_PREF_NAME, Context.MODE_PRIVATE);
-        int pax = customerPrefs.getInt(KEY_PAX_COUNT, 1); // Default to 1 if not found
+        SharedPreferences customerPrefs = requireActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
+        int pax = customerPrefs.getInt(PrefKey.KEY_PAX_COUNT, 1); // Default to 1 if not found
 
         // Pass pax to the intent
         intent.putExtra("pax", pax);
 
-        startActivityForResult(intent, SEAT_SELECTION_REQUEST_CODE);
+        startActivityForResult(intent, PrefKey.SEAT_SELECTION_REQUEST_CODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SEAT_SELECTION_REQUEST_CODE) {
+        if (requestCode == PrefKey.SEAT_SELECTION_REQUEST_CODE) {
             if (resultCode == android.app.Activity.RESULT_OK && data != null) {
                 // Retrieve the selected seats from the Intent
                 ArrayList<String> seats = data.getStringArrayListExtra("selectedSeats");
@@ -113,8 +107,8 @@ public class AddOnsFragment extends Fragment {
 
     private void displaySelectedSeats() {
         // Retrieve selected seats from SharedPreferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE); //Use addon's PREF NAME
-        Set<String> selectedSeatsSet = sharedPreferences.getStringSet(KEY_SELECTED_SEATS, new HashSet<>()); // Provide a default empty set if not found, use the const
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE); //Use addon's PREF NAME
+        Set<String> selectedSeatsSet = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>()); // Provide a default empty set if not found, use the const
 
         selectedSeats = new ArrayList<>(selectedSeatsSet); // Convert Set to List
 
@@ -129,15 +123,15 @@ public class AddOnsFragment extends Fragment {
     //Methods to store Switch state
 
     private void saveSwitchState(boolean isChecked) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(KEY_REFUND_GUARANTEE, isChecked);
+        editor.putBoolean(PrefKey.KEY_REFUND_GUARANTEE, isChecked);
         editor.apply();
     }
 
     private void loadSwitchState() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        boolean isChecked = sharedPreferences.getBoolean(KEY_REFUND_GUARANTEE, false); // Default to false if not found
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
+        boolean isChecked = sharedPreferences.getBoolean(PrefKey.KEY_REFUND_GUARANTEE, false); // Default to false if not found
         switchRefundGuarantee.setChecked(isChecked);
     }
 
@@ -146,15 +140,15 @@ public class AddOnsFragment extends Fragment {
     public void clearSharedPreferences() {
 
         // Clear selected seats.
-        SharedPreferences sharedPreferencesSeats = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE); // Use correct name
+        SharedPreferences sharedPreferencesSeats = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE); // Use correct name
         SharedPreferences.Editor editorSeats = sharedPreferencesSeats.edit();
-        editorSeats.remove(KEY_SELECTED_SEATS);  // Remove the specific key, not clear all
+        editorSeats.remove(PrefKey.KEY_SELECTED_SEATS);  // Remove the specific key, not clear all
         editorSeats.apply(); // or editor.commit();  Apply is asynchronous, commit is synchronous
 
         // Clear refund switch prefs.
-        SharedPreferences sharedPreferencesSwitch = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferencesSwitch = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
         SharedPreferences.Editor editorSwitch = sharedPreferencesSwitch.edit();
-        editorSwitch.remove(KEY_REFUND_GUARANTEE);  // Remove the specific key, not clear all
+        editorSwitch.remove(PrefKey.KEY_REFUND_GUARANTEE);  // Remove the specific key, not clear all
         editorSwitch.apply(); // or editor.commit();  Apply is asynchronous, commit is synchronous
 
         Log.d("AddOnsFragment", "Add-ons Shared Preferences cleared.");

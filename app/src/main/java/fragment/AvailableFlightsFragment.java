@@ -36,7 +36,6 @@ public class AvailableFlightsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvFlights);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
         // Load Flights
         initializeFlightsInDatabase();
         loadFlights();
@@ -117,6 +116,7 @@ public class AvailableFlightsFragment extends Fragment {
 
         try {
             while (cursor.moveToNext()) {
+                int flightId = cursor.getInt(cursor.getColumnIndexOrThrow("flight_id"));
                 String departureAirport = cursor.getString(cursor.getColumnIndexOrThrow("departure_airport"));
                 String arrivalAirport = cursor.getString(cursor.getColumnIndexOrThrow("arrival_airport"));
                 String departureTime = cursor.getString(cursor.getColumnIndexOrThrow("departure_time"));
@@ -125,6 +125,7 @@ public class AvailableFlightsFragment extends Fragment {
                 double priceRate = cursor.getDouble(cursor.getColumnIndexOrThrow("price_rate"));
 
                 Flight flight = new Flight(
+                        flightId,
                         departureAirport,
                         arrivalAirport,
                         departureTime,

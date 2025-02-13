@@ -20,13 +20,12 @@ import java.util.List;
 import java.util.Set;
 
 import fragment.AddOnsFragment;
+import utils.PrefKey;
 
 public class SeatSelectionActivity extends AppCompatActivity {
 
     private int rows = 34; // Example row count (admin-defined)
     private int seatsPerSide = 3; // Number of seats per side
-    private static final String PREF_NAME = "AddOnsPrefs";  // IMPORTANT: Use the AddOnsPrefs here
-    private static final String KEY_SELECTED_SEATS = "selectedSeats";
 
     private ImageButton btnBackToAddOns, done;
     private List<String> selectedSeats = new ArrayList<>(); // Store selected seats
@@ -44,8 +43,8 @@ public class SeatSelectionActivity extends AppCompatActivity {
         seatsAvailable = maxSeatsToSelect;
 
         // Retrieve previously selected seats from SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        previouslySelectedSeats = sharedPreferences.getStringSet(KEY_SELECTED_SEATS, new HashSet<>());
+        SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, MODE_PRIVATE);
+        previouslySelectedSeats = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>());
 
         LinearLayout seatContainer = findViewById(R.id.seatContainer);
         LinearLayout rowLayouta = new LinearLayout(this);
@@ -134,9 +133,9 @@ public class SeatSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Store selected seats in SharedPreferences
-                SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putStringSet(KEY_SELECTED_SEATS, new HashSet<>(selectedSeats)); // Store as a Set
+                editor.putStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>(selectedSeats)); // Store as a Set
                 editor.apply();
 
                 Log.d("SeatSelection", "Saving seats: " + selectedSeats);

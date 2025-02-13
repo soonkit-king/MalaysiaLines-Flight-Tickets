@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "first_name TEXT, " +
                 "last_name TEXT, " +
                 "email TEXT, " +
-                "residence_country TEXT, " +
+                "country_residence TEXT, " +
                 "country_code TEXT, " +
                 "phone_number TEXT, " +
                 "FOREIGN KEY(booking_id) REFERENCES booking(booking_id))");
@@ -111,13 +111,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String departureDatetime,
             String arrivalDatetime,
             String seatNo,
-            int refund,
-            double payment,
+            boolean refundGuarantee,
+            double totalPayment,
             // Contact details
             String firstName,
             String lastName,
             String email,
-            String residenceCountry,
+            String countryResidence,
             String countryCode,
             String phoneNumber,
             // Passenger list
@@ -135,8 +135,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             bookingValues.put("departure_datetime", departureDatetime);
             bookingValues.put("arrival_datetime", arrivalDatetime);
             bookingValues.put("seat_no", seatNo);
-            bookingValues.put("refund_guarantee", refund);
-            bookingValues.put("total_payment", payment);
+            bookingValues.put("refund_guarantee", refundGuarantee);
+            bookingValues.put("total_payment", totalPayment);
             
             int bookingId = (int) db.insert("booking", null, bookingValues);
 
@@ -146,7 +146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contactValues.put("first_name", firstName);
             contactValues.put("last_name", lastName);
             contactValues.put("email", email);
-            contactValues.put("residence_country", residenceCountry);
+            contactValues.put("country_residence", countryResidence);
             contactValues.put("country_code", countryCode);
             contactValues.put("phone_number", phoneNumber);
 

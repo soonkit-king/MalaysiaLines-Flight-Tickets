@@ -1,6 +1,7 @@
 package model;
 
 public class Flight {
+    private int flightId;
     private String departureAirport;
     private String arrivalAirport;
     private String departureTime;
@@ -9,7 +10,8 @@ public class Flight {
     private double priceRate;
 
     // Constructor (optional, but recommended)
-    public Flight(String departureAirport, String arrivalAirport, String departureTime, String arrivalTime, String duration, double priceRate) {
+    public Flight(int flightId, String departureAirport, String arrivalAirport, String departureTime, String arrivalTime, String duration, double priceRate) {
+        this.flightId = flightId;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
@@ -19,6 +21,10 @@ public class Flight {
     }
 
     // Getters
+    public int getFlightId() {
+        return flightId;
+    }
+
     public String getDepartureAirport() {
         return departureAirport;
     }
@@ -44,6 +50,10 @@ public class Flight {
     }
 
     // Setters
+    public void setFlightId(int flightId) {
+        this.flightId = flightId;
+    }
+
     public void setDepartureAirport(String departureAirport) {
         this.departureAirport = departureAirport;
     }

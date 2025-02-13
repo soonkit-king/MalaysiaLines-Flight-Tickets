@@ -29,7 +29,7 @@ public class Conversions {
         return months[month];
     }
 
-    public static List<String> compileBoardingDatetimes(String departureDate, String departureTime, String duration) {
+    public static List<String> calculateFlightDatetimes(String departureDate, String departureTime, String duration) {
         // Define formatters
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"); // Input format
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"); // Output format
@@ -47,6 +47,9 @@ public class Conversions {
             }
         } else if (duration.contains("m")) {
             minutes = Integer.parseInt(duration.replace("m", "").trim());
+        }
+        else {
+            return List.of(); // Immutable empty list (Java 9+)
         }
 
         // Calculate arrival time
