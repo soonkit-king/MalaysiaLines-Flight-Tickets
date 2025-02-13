@@ -37,12 +37,12 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         holder.tvBookingDepartureAirport.setText(booking.getDepartureAirport());
         holder.tvBookingArrivalAirport.setText(booking.getArrivalAirport());
-        holder.tvPax.setText(String.valueOf(booking.getPax()));
+        holder.tvPax.setText(booking.getPax() + " pax");
         holder.tvDepartureDatetime.setText(String.valueOf(booking.getDepartureDatetime()));
         holder.tvArrivalDatetime.setText(String.valueOf(booking.getArrivalDatetime()));
         holder.tvSeatNo.setText(booking.getSeatNo());
         holder.tvRefund.setText(booking.hasRefundGuarantee() ? "With refund guarantee" : "Without refund guarantee");
-        holder.tvTotalPayment.setText(Double.toString(booking.getTotalPayment())); // Format double to 2 decimal places
+        holder.tvTotalPayment.setText(String.format("Total: RM%.2f", booking.getTotalPayment()));
     }
 
     @Override

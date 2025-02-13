@@ -109,7 +109,7 @@ public class BookingActivity extends AppCompatActivity {
             tvDepartureDatetime.setText(departureDatetime);
             tvArrivalDatetime.setText(arrivalDatetime);
             tvTotalPayment.setText(String.format("RM %.2f", totalPayment)); // Format to 2 decimal places
-            tvPax.setText(String.valueOf(pax));
+            tvPax.setText(pax + " pax");
 
             // Put into sharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
