@@ -194,7 +194,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
                 android:layout_weight="1"
+                android:textSize="18sp"
                 android:text="Total"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -204,6 +206,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:paddingRight="16dp"
+                    android:textSize="18sp"
                     android:text="RM200.99"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
@@ -214,6 +218,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:textSize="16sp"
             android:text="Continue to add-ons"
             android:textAllCaps="false"
             android:textColor="@color/black" />
