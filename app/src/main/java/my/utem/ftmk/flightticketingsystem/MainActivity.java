@@ -9,6 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import fragment.AvailableFlightsFragment;
 import fragment.BookingHistoryFragment;
+import sqlite.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -18,6 +19,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // *****USE ONLY FOR CLEAR BOOKING DATABASE ONLY*****
+        //DatabaseHelper dbHelper = new DatabaseHelper(this);
+        //dbHelper.clearbookingdatabase();
 
         // Set default fragment
         getSupportFragmentManager().beginTransaction()

@@ -5,8 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import model.Passenger;
 
@@ -185,4 +188,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public void clearbookingdatabase() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("booking", null, null);
+        db.close();
+    }
+
+    public Set<String> getBookedSeats(int flightId, String departureDatetime) {
+        Set<String> bookedSeats = new HashSet<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT seat_no FROM booking WHERE flight_id = ? AND departure_datetime = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(flightId), departureDatetime});
+
+        if (cursor != null) {
+            Log.d("DB_FETCH", "Query executed. Checking data...");
+
+            while (cursor.moveToNext()) {
+                String seatNoString = cursor.getString(0); // Get the comma-separated string
+
+                if (seatNoString != null && !seatNoString.isEmpty()) {
+                    String[] seats = seatNoString.split(",\\s*"); // Split by comma and optional whitespace
+
+                    for (String seat : seats) {
+                        bookedSeats.add(seat.trim()); // Add each individual seat after trimming whitespace
+                        Log.d("DB_FETCH", "Fetched seat: " + seat.trim());
+                    }
+                }
+
+            }
+            cursor.close();
+        } else {
+            Log.e("DB_FETCH", "Cursor is null. Query failed.");
+        }
+
+        db.close();
+        return bookedSeats;
+    }
+
+
 }

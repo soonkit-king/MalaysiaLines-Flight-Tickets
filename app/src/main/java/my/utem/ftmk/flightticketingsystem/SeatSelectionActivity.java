@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import fragment.AddOnsFragment;
+import sqlite.DatabaseHelper;
 import utils.PrefKey;
 
 public class SeatSelectionActivity extends AppCompatActivity {
@@ -44,7 +45,14 @@ public class SeatSelectionActivity extends AppCompatActivity {
 
         // Retrieve previously selected seats from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences(PrefKey.PREF_BOOKING, MODE_PRIVATE);
+        int flightId = sharedPreferences.getInt(PrefKey.KEY_FLIGHT_ID, -1);
+        String departureDatetime = sharedPreferences.getString(PrefKey.KEY_DEPARTURE_DATETIME, "Unknown Time");
         previouslySelectedSeats = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>());
+
+        // Retrieve booked seats from the database
+        // Retrieve booked seats from the database using flightId & departureDatetime
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        Set<String> bookedSeats = dbHelper.getBookedSeats(flightId, departureDatetime);
 
         LinearLayout seatContainer = findViewById(R.id.seatContainer);
         LinearLayout rowLayouta = new LinearLayout(this);
@@ -71,7 +79,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
             // Left side seats
             for (int j = 0; j < seatsPerSide; j++) {
                 String seatTag = (i + 1) + String.valueOf(seatLetter);
-                ImageView seat = createSeat(seatTag); // 1A, 1B, 1C - ROW NUMBER FIRST
+                ImageView seat = createSeat(seatTag, bookedSeats); // Pass bookedSeats as argument
                 if (previouslySelectedSeats.contains(seatTag)) {
                     seat.setImageResource(R.drawable.seat_icon_green); // Set to green if previously selected
                     selectedSeats.add(seatTag); // Also update selectedSeats list to match the display
@@ -80,6 +88,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
                 rowLayout.addView(seat);
                 seatLetter++; // Increment to the next seat letter
             }
+
 
             // Spacer
             TextView textView = createTextView(String.valueOf(i + 1)); // Display the row number
@@ -95,7 +104,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
             // Right side seats
             for (int j = 0; j < seatsPerSide; j++) {
                 String seatTag = (i + 1) + String.valueOf(seatLetter);
-                ImageView seat = createSeat(seatTag); // 1D, 1E, 1F - ROW NUMBER FIRST
+                ImageView seat = createSeat(seatTag, bookedSeats); // 1D, 1E, 1F - ROW NUMBER FIRST
                 if (previouslySelectedSeats.contains(seatTag)) {
                     seat.setImageResource(R.drawable.seat_icon_green); // Set to green if previously selected
                     selectedSeats.add(seatTag); // Also update selectedSeats list to match the display
@@ -156,34 +165,47 @@ public class SeatSelectionActivity extends AppCompatActivity {
         return textView;
     }
 
-    private ImageView createSeat(String seatTag) {
+    private ImageView createSeat(String seatTag, Set<String> bookedSeats) {
         ImageView seat = new ImageView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(88, 120); // Adjust size as needed
-        params.setMargins(0, 0, 0, 0); // Space between seats
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(88, 120);
+        params.setMargins(0, 0, 0, 0);
         seat.setLayoutParams(params);
-        seat.setImageResource(R.drawable.seat_icon_blue); // Default unselected seat
+
+        boolean isBooked = bookedSeats.contains(seatTag);
+
+        if (isBooked) {
+            seat.setImageResource(R.drawable.seat_icon_red); // Mark booked seats as RED
+            seat.setEnabled(false); // Disable clicks
+            seat.setClickable(false); // Ensure no clicks
+        } else if (previouslySelectedSeats.contains(seatTag)) {
+            seat.setImageResource(R.drawable.seat_icon_green); // Previously selected seats (GREEN)
+            selectedSeats.add(seatTag);
+            seatsAvailable -= 1;
+        } else {
+            seat.setImageResource(R.drawable.seat_icon_blue); // Default (BLUE)
+        }
+
         seat.setTag(seatTag);
 
-        // Seat click listener
-        seat.setOnClickListener(view -> {
-            ImageView selectedSeat = (ImageView) view;
-            if (!selectedSeats.contains(seatTag)) {
-                // Select seat
-                if (seatsAvailable > 0) {
-                    selectedSeat.setImageResource(R.drawable.seat_icon_green);
-                    selectedSeats.add(seatTag); // Add seat to list
-                    seatsAvailable -= 1; //Decrement seat available
+        // Add click listener only if the seat is not booked
+        if (!isBooked) { // This condition is redundant but included for clarity
+            seat.setOnClickListener(view -> {
+                ImageView selectedSeat = (ImageView) view;
+                if (!selectedSeats.contains(seatTag)) {
+                    if (seatsAvailable > 0) {
+                        selectedSeat.setImageResource(R.drawable.seat_icon_green);
+                        selectedSeats.add(seatTag);
+                        seatsAvailable -= 1;
+                    } else {
+                        Toast.makeText(SeatSelectionActivity.this, "You can only select " + maxSeatsToSelect + " seats.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    //Selection limit
-                    Toast.makeText(SeatSelectionActivity.this, "You can only select " + maxSeatsToSelect + " seats.", Toast.LENGTH_SHORT).show();
+                    selectedSeat.setImageResource(R.drawable.seat_icon_blue);
+                    selectedSeats.remove(seatTag);
+                    seatsAvailable += 1;
                 }
-            } else {
-                // Deselect seat
-                selectedSeat.setImageResource(R.drawable.seat_icon_blue);
-                selectedSeats.remove(seatTag); // Remove seat from list
-                seatsAvailable += 1; //Increment seat available
-            }
-        });
+            });
+        }
 
         return seat;
     }
