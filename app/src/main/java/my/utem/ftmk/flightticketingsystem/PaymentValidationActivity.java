@@ -28,10 +28,7 @@ import utils.PrefKey;
 public class PaymentValidationActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-
     private SharedPreferences sharedPreferences;
-    private static String fullPhoneNumber;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +149,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
             pax,
             departureDatetime,
             arrivalDatetime,
-            seatNo,
+            seatNo.toString(),
             refund,
             totalPayment,
             // Contact details

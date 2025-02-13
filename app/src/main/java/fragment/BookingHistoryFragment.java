@@ -31,22 +31,22 @@ public class BookingHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_booking_history, container, false);
 
+        dbHelper = new DatabaseHelper(getContext());
+
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.rvBookings);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        loadAllBookingHistory();
-
         // Set Adapter
+        bookingHistoryList = getBookingHistoryList();
         bookingHistoryAdapter = new BookingHistoryAdapter(getContext(), bookingHistoryList);
         recyclerView.setAdapter(bookingHistoryAdapter);
 
         return view;
     }
 
-    private void loadAllBookingHistory() {
-        bookingHistoryList = new ArrayList<>();
-        dbHelper = new DatabaseHelper(getContext());
+    private List<BookingHistory> getBookingHistoryList() {
+        List<BookingHistory> list = new ArrayList<>();
         Cursor cursor = dbHelper.getAllBookingHistory();
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -63,7 +63,7 @@ public class BookingHistoryFragment extends Fragment {
 
                 // Create BookingHistory object
                 BookingHistory booking = new BookingHistory(bookingId, departureAirport, arrivalAirport, departureDatetime, arrivalDatetime, seatNo, hasRefundGuarantee, pax, totalPayment);
-                bookingHistoryList.add(booking);
+                list.add(booking);
             } while (cursor.moveToNext());
 
             cursor.close();
@@ -73,6 +73,7 @@ public class BookingHistoryFragment extends Fragment {
         if (bookingHistoryAdapter != null) {
             bookingHistoryAdapter.notifyDataSetChanged();
         }
+        return list;
     }
 
 }
