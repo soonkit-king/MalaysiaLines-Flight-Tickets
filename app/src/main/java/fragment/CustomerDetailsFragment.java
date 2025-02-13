@@ -196,14 +196,15 @@ public class CustomerDetailsFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1), // Default to -1 if missing
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -218,25 +219,30 @@ public class CustomerDetailsFragment extends Fragment {
 
 
     private void generatePassengers(int count) {
-        passengerList.clear();
-        //Load passenger data from SharedPreferences
+        passengerList.clear();  // Clear the list only once at the start
+
+        // Load passenger data from SharedPreferences
         String passengerJsonString = sharedPreferences.getString(KEY_PASSENGER_DATA, null);
 
         if (passengerJsonString != null) {
             try {
+                // Ensure the JSON is valid and parse it
                 JSONArray jsonArray = new JSONArray(passengerJsonString);
-                passengerList.clear();
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
+
+                    // Use optString to safely extract values
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1), // Default to -1 if missing
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -245,19 +251,21 @@ public class CustomerDetailsFragment extends Fragment {
                 e.printStackTrace();
             }
 
+            // Set the adapter after loading the data
             passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
             rvPassengerDetail.setAdapter(passengerDetailAdapter);
 
-        }else {
-
-
+        } else {
+            // If SharedPreferences has no data, create empty passengers based on the count
             for (int i = 0; i < count; i++) {
-                passengerList.add(new Passenger("", "", "", "", "", "", "", ""));
+                passengerList.add(new Passenger(-1,"", "", "", "", "", "", "", ""));
             }
+
             passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
             rvPassengerDetail.setAdapter(passengerDetailAdapter);
         }
     }
+
 
     private void fetchCountryCodes() {
         OkHttpClient client = new OkHttpClient();
