@@ -89,21 +89,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                              String departureTime, String arrivalTime,
                              String flightDuration, double priceRate) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
 
-        values.put("departure_airport", departureAirport);
-        values.put("arrival_airport", arrivalAirport);
-        values.put("departure_time", departureTime);
-        values.put("arrival_time", arrivalTime);
-        values.put("flight_duration", flightDuration);
-        values.put("price_rate", priceRate);
+        // Check if the flight already exists
+        Cursor cursor = db.rawQuery("SELECT * FROM flight WHERE departure_airport = ? AND arrival_airport = ? AND departure_time = ?",
+                new String[]{departureAirport, arrivalAirport, departureTime});
 
-        // Insert the row and return the primary key value of the new row
-        long newRowId = db.insert("flight", null, values);
+        if (cursor.getCount() == 0) { // If no existing flight, insert new one
+            ContentValues values = new ContentValues();
+            values.put("departure_airport", departureAirport);
+            values.put("arrival_airport", arrivalAirport);
+            values.put("departure_time", departureTime);
+            values.put("arrival_time", arrivalTime);
+            values.put("flight_duration", flightDuration);
+            values.put("price_rate", priceRate);
 
-        // Close the database connection
+            db.insert("flight", null, values);
+        }
+
+        cursor.close();
         db.close();
     }
+
 
     public boolean insertCompleteBooking(
             int flightId,
@@ -137,7 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             bookingValues.put("seat_no", seatNo);
             bookingValues.put("refund_guarantee", refundGuarantee);
             bookingValues.put("total_payment", totalPayment);
-            
+
             int bookingId = (int) db.insert("booking", null, bookingValues);
 
             // 2. Insert contact information
