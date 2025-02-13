@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fragment.CustomerDetailsFragment">
 
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!-- Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
             <ImageButton
                 android:id="@+id/close_or_back_button"
@@ -27,179 +22,182 @@
                 android:background="@color/transparent"
                 android:src="@drawable/baseline_close_24" />
 
-            <TextView
-                android:id="@+id/tvBookingSectionName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Passenger Details"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-
-        <!-- Flight Details -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvBookingSectionName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="18dp"
-            android:paddingTop="18dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="18dp">
+            android:layout_marginStart="16dp"
+            android:text="Passenger Details"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+    <View
+        android:id="@+id/header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/header_layout"
+        android:background="@android:color/darker_gray" />
 
-                <!-- First Row: Start and End Airport -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+    <!-- Flight Details -->
+    <LinearLayout
+        android:id="@+id/flight_details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_divider"
+        android:orientation="horizontal"
+        android:paddingStart="18dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="18dp">
 
-                    <TextView
-                        android:id="@+id/tvStartAirport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kuala Lumpur (KUL)"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/label_size_small" />
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:srcCompat="@drawable/airplane_straight" />
-
-                    <TextView
-                        android:id="@+id/tvEndAirport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kota Bharu (KBD)"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/label_size_small" />
-                </LinearLayout>
-
-                <!-- Second Row: Departure and Arrival Time -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/ivClock"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="5dp"
-                        app:srcCompat="@drawable/clock" />
-
-                    <TextView
-                        android:id="@+id/tvDepartureDatetime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="13 Dec 1999"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/label_size_small" />
-
-                    <TextView
-                        android:id="@+id/lblDash"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="5dp"
-                        android:text="-"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/label_size_small" />
-
-                    <TextView
-                        android:id="@+id/tvArrivalDatetime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="14 Dec 1999"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/label_size_small" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Right Section: Total Info -->
-            <LinearLayout
-                android:id="@+id/LinearLayoutTotal"
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:gravity="bottom|end"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvPax"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center|end"
-                    android:text="99 pax"
-                    android:textSize="@dimen/label_size_medium"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="-127dp">
+            android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/passanger_detail_fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:textColor="@color/black" />
-        </ScrollView>
-        <!-- Total and Button -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@android:color/background_light"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-
+            <!-- First Row: Start and End Airport -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tvStartAirport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Total"
+                    android:text="Kuala Lumpur (KUL)"
                     android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/label_size_small" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/airplane_straight" />
+
+                <TextView
+                    android:id="@+id/tvEndAirport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kota Bharu (KBD)"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_size_small" />
+            </LinearLayout>
+
+            <!-- Second Row: Departure and Arrival Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivClock"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/tvDepartureDatetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="13 Dec 1999"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_size_small" />
+
+                <TextView
+                    android:id="@+id/lblDash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_size_small" />
+
+                <TextView
+                    android:id="@+id/tvArrivalDatetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14 Dec 1999"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_size_small" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right Section: Total Info -->
+        <LinearLayout
+            android:id="@+id/LinearLayoutTotal"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:gravity="bottom|end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPax"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center|end"
+                android:text="99 pax"
+                android:textSize="@dimen/label_size_medium"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/flight_details_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/flight_details_layout"
+        android:background="@android:color/darker_gray" />
+
+    <FrameLayout
+        android:id="@+id/passanger_detail_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer_layout"
+        android:layout_below="@id/flight_details_divider"
+        android:orientation="vertical"
+        android:textColor="@color/black" />
+
+    <View
+        android:id="@+id/flight_details_divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/footer_layout"
+        android:background="@android:color/darker_gray" />
+
+
+    <LinearLayout
+        android:id="@+id/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/background_light"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTotal"
@@ -211,15 +209,14 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/next_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:text="Continue to add-ons" />
-        </LinearLayout>
-
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Continue to add-ons"
+            android:textAllCaps="false"
+            android:textColor="@color/black" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -124,6 +125,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
         String departureDatetime = sharedPreferences.getString(PrefKey.KEY_DEPARTURE_DATETIME, "");
         String arrivalDatetime = sharedPreferences.getString(PrefKey.KEY_ARRIVAL_DATETIME, "");
         Set<String> seatNo = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>());
+        String seatNoString = TextUtils.join(", ", seatNo);
         boolean refund = sharedPreferences.getBoolean(PrefKey.KEY_REFUND_GUARANTEE, false);
         double totalPayment = sharedPreferences.getFloat(PrefKey.KEY_TOTAL_PAYMENT, -1);
 
@@ -149,7 +151,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
             pax,
             departureDatetime,
             arrivalDatetime,
-            seatNo.toString(),
+            seatNoString,
             refund,
             totalPayment,
             // Contact details

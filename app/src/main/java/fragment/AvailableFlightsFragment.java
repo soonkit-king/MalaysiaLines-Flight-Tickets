@@ -1,6 +1,7 @@
 package fragment;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -48,6 +49,9 @@ public class AvailableFlightsFragment extends Fragment {
     }
 
     private void initializeFlightsInDatabase() {
+        //****USE FIRST TIME TO CLEAR DATABASE ONLY*****
+        //SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //db.delete("flight", null, null);
             // Insert sample flights
         dbHelper.insertFlight(
                 "Kuala Lumpur (KUL)", "Penang (PEN)",
