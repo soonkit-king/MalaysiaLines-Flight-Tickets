@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -24,130 +24,129 @@ import fragment.CustomerDetailsFragment;
 
 public class BookingActivity extends AppCompatActivity {
 
-    private boolean isFragmentReplaced = false; // Track button state
+    private boolean isFragmentReplaced = false;
     private Button btnNext;
-    private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
-    private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
     private ImageButton btnCloseOrBack;
-    private TextView tvBookingSectionName;
-    private static final int SEAT_SELECTION_REQUEST = 1;
-    private TextView tvPax;
+    private TextView tvBookingSectionName, tvPax;
     private int pax = 0;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
-      Fragment fragment = getSupportFragmentManager()
-                .findFragmentById(R.id.passanger_detail_fragment_container);
-        if (fragment != null) {
-            View fragmentView = fragment.getView();  // Get the fragment's root view
-            if (fragmentView != null) {
-                firstNameEditText = fragmentView.findViewById(R.id.first_name);
-                lastNameEditText = fragmentView.findViewById(R.id.last_name);
-                emailEditText = fragmentView.findViewById(R.id.email);
-                countryResidenceEditText = fragmentView.findViewById(R.id.country_residence);
-                phoneNumberEditText = fragmentView.findViewById(R.id.phone_number);
-                firstNameErrorTextView = fragmentView.findViewById(R.id.first_name_error);
-                lastNameErrorTextView = fragmentView.findViewById(R.id.last_name_error);
-                emailErrorTextView = fragmentView.findViewById(R.id.email_error);
-                phoneNumberErrorTextView = fragmentView.findViewById(R.id.phone_number_error);
-            }
-        }
-        //View fragmentView = fragment.getView();
-        /*  firstNameEditText = fragmentView.findViewById(R.id.first_name);
-        lastNameEditText = fragmentView.findViewById(R.id.last_name);
-        emailEditText = fragmentView.findViewById(R.id.email);
-        countryResidenceEditText = fragmentView.findViewById(R.id.country_residence);
-        phoneNumberEditText = fragmentView.findViewById(R.id.phone_number);
-        firstNameErrorTextView = fragmentView.findViewById(R.id.first_name_error);
-        lastNameErrorTextView = fragmentView.findViewById(R.id.last_name_error);
-        emailErrorTextView = fragmentView.findViewById(R.id.email_error);
-        phoneNumberErrorTextView = fragmentView.findViewById(R.id.phone_number_error);*/
 
-
+        fragmentManager = getSupportFragmentManager();
         btnNext = findViewById(R.id.next_button);
         btnCloseOrBack = findViewById(R.id.close_button);
         tvBookingSectionName = findViewById(R.id.tvBookingSectionName);
         tvPax = findViewById(R.id.tvPax);
 
-        // Initial state - always start with CustomerDetailsFragment
-        replaceFragment(new CustomerDetailsFragment());
-        btnNext.setText("Continue to add-ons");
-        isFragmentReplaced = false;
-
         pax = getIntent().getIntExtra("pax", 1);
-
         tvPax.setText(pax + " pax");
 
-        btnCloseOrBack.setOnClickListener(new View.OnClickListener() {
+        // Load the initial fragment (CustomerDetailsFragment)
+        if (savedInstanceState == null) {
+            loadInitialFragment();
+        }
+
+        btnCloseOrBack.setOnClickListener(v -> {
+            if (!isFragmentReplaced) {
+                showConfirmDialog(); // Show exit confirmation
+            } else {
+                switchToCustomerDetails();
+            }
+        });
+
+        btnNext.setOnClickListener(v -> {
+            if (!isFragmentReplaced) {
+                switchToAddOns();
+            } else {
+                proceedToPayment();
+            }
+        });
+
+        handleBackButton();
+    }
+
+    private void handleBackButton() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View v) {
+            public void handleOnBackPressed() {
                 if (!isFragmentReplaced) {
-                    // Goes from customer details page to main page
-                    // Show a dialog and ask if they are sure to or not to exit bcs it will remove inputs
                     showConfirmDialog();
                 } else {
-                    // Goes from add-ons page to customer details page
-                    replaceFragment(new CustomerDetailsFragment());
-                    btnNext.setText("Continue to add-ons"); // Changed "Add-ons" to "Continue to add-ons" to match initial state
-                    tvBookingSectionName.setText("Passenger details");
-                    btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(BookingActivity.this, R.drawable.baseline_close_24));
-                    isFragmentReplaced = false;
+                    switchToCustomerDetails();
                 }
             }
         });
-
-        btnNext.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (!isFragmentReplaced) {
-                    // Goes from customer details page to add-ons page
-                    replaceFragment(new AddOnsFragment());
-                    btnNext.setText("Proceed to Payment");
-                    tvBookingSectionName.setText("Add-ons");
-                    btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(BookingActivity.this, R.drawable.baseline_arrow_back_ios_24));
-                    isFragmentReplaced = true;
-                } else {
-                    // Goes from add-ons page to main page
-                    Intent intent = new Intent(BookingActivity.this, PaymentValidationActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-        });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("isFragmentReplaced", isFragmentReplaced);
-    }
-
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+    private void loadInitialFragment() {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.passanger_detail_fragment_container, fragment);
-        transaction.addToBackStack(null); // Allow user to navigate back
+        CustomerDetailsFragment customerDetailsFragment = new CustomerDetailsFragment();
+        transaction.add(R.id.passanger_detail_fragment_container, customerDetailsFragment, "CustomerDetails");
         transaction.commit();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void switchToAddOns() {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        Fragment customerFragment = fragmentManager.findFragmentByTag("CustomerDetails");
+        if (customerFragment != null) {
+            transaction.hide(customerFragment);
+        }
+
+        AddOnsFragment addOnsFragment = (AddOnsFragment) fragmentManager.findFragmentByTag("AddOns");
+        if (addOnsFragment == null) {
+            addOnsFragment = new AddOnsFragment();
+            transaction.add(R.id.passanger_detail_fragment_container, addOnsFragment, "AddOns");
+        } else {
+            transaction.show(addOnsFragment);
+        }
+
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        btnNext.setText("Proceed to Payment");
+        tvBookingSectionName.setText("Add-ons");
+        btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_arrow_back_ios_24));
+        isFragmentReplaced = true;
+    }
+
+    private void switchToCustomerDetails() {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        Fragment addOnsFragment = fragmentManager.findFragmentByTag("AddOns");
+        if (addOnsFragment != null) {
+            transaction.hide(addOnsFragment);
+        }
+
+        Fragment customerFragment = fragmentManager.findFragmentByTag("CustomerDetails");
+        if (customerFragment != null) {
+            transaction.show(customerFragment);
+        }
+
+        transaction.commit();
+
+        btnNext.setText("Continue to add-ons");
+        tvBookingSectionName.setText("Passenger details");
+        btnCloseOrBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.baseline_close_24));
+        isFragmentReplaced = false;
+    }
+
+    private void proceedToPayment() {
+        Intent intent = new Intent(BookingActivity.this, PaymentValidationActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void clearCustomerDetails() {
-        // Get the list of all SharedPreferences files in the app
         SharedPreferences sharedPreferences = getSharedPreferences(CustomerDetailsFragment.PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // Clears all stored data
-        editor.apply(); // Apply changes
+        editor.clear();
+        editor.apply();
     }
-
 
     private void showConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -161,23 +160,12 @@ public class BookingActivity extends AppCompatActivity {
         Button noButton = dialogView.findViewById(R.id.noButton);
         Button yesButton = dialogView.findViewById(R.id.yesButton);
 
-        noButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        noButton.setOnClickListener(v -> dialog.dismiss());
 
-        yesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Call the method to clear SharedPreferences
-                clearCustomerDetails();
-
-                //After the user has confirm, the code will return to mainActivity page
-                finish();
-                dialog.dismiss();
-            }
+        yesButton.setOnClickListener(v -> {
+            clearCustomerDetails();
+            finish();
+            dialog.dismiss();
         });
     }
 }
