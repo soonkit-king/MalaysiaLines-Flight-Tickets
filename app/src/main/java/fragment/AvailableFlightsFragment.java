@@ -41,6 +41,9 @@ public class AvailableFlightsFragment extends Fragment {
 
     private void loadFlights() {
         flightList = new ArrayList<>();
+
+
+
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));
         flightList.add(new Flight("Kuala Lumpur (KUL) ", "Kota Bharu (KBD)", "14:50", "20:02" , "5h 12m" , 234.12));

@@ -1,10 +1,12 @@
-package SQLite;
+package sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.List;
 
 import model.Passenger;
 
@@ -73,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insertBooking(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
+    public long initializeFlights(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("flight_id", flightId);
@@ -87,43 +89,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert("booking", null, values);
     }
 
-    public long insertContact(int bookingId, String firstName, String lastName, String email, String residenceCountry, String countryCode, String phoneNumber) {
+    public boolean insertCompleteBooking(
+            int flightId,
+            int pax,
+            String depDatetime,
+            String arrDatetime,
+            String seatNo,
+            int refund,
+            double payment,
+            // Contact details
+            String firstName,
+            String lastName,
+            String email,
+            String residenceCountry,
+            String countryCode,
+            String phoneNumber,
+            // Passenger list
+            List<Passenger> passengers
+    ) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("booking_id", bookingId);
-        values.put("first_name", firstName);
-        values.put("last_name", lastName);
-        values.put("email", email);
-        values.put("residence_country", residenceCountry);
-        values.put("country_code", countryCode);
-        values.put("phone_number", phoneNumber);
 
-        return db.insert("contact", null, values);
-    }
+        try {
+            db.beginTransaction();
 
-    public long insertPassenger(Passenger passenger) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("booking_id", passenger.getBookingId());
-        values.put("first_name", passenger.getFirstName());
-        values.put("last_name", passenger.getLastName());
-        values.put("gender", passenger.getGender());
-        values.put("date_of_birth", passenger.getDateOfBirth());
-        values.put("nationality", passenger.getNationality());
-        values.put("issue_country", passenger.getCountryOfIssue());
-        values.put("passport_number", passenger.getPassportNumber());
-        values.put("passport_expiry_date", passenger.getPassportExpiry());
+            // 1. Insert booking first
+            ContentValues bookingValues = new ContentValues();
+            bookingValues.put("flight_id", flightId);
+            bookingValues.put("pax", pax);
+            bookingValues.put("departure_datetime", depDatetime);
+            bookingValues.put("arrival_datetime", arrDatetime);
+            bookingValues.put("seat_no", seatNo);
+            bookingValues.put("refund_guarantee", refund);
+            bookingValues.put("total_payment", payment);
+            
+            int bookingId = (int) db.insert("booking", null, bookingValues);
 
-        return db.insert("passenger", null, values);
+            // 2. Insert contact information
+            ContentValues contactValues = new ContentValues();
+            contactValues.put("booking_id", bookingId);
+            contactValues.put("first_name", firstName);
+            contactValues.put("last_name", lastName);
+            contactValues.put("email", email);
+            contactValues.put("residence_country", residenceCountry);
+            contactValues.put("country_code", countryCode);
+            contactValues.put("phone_number", phoneNumber);
+
+            db.insert("contact", null, contactValues);
+
+            // 3. Insert all passengers
+            for (Passenger passenger : passengers) {
+                passenger.setBookingId(bookingId);
+                ContentValues passengerValues = new ContentValues();
+                passengerValues.put("booking_id", passenger.getBookingId());
+                passengerValues.put("first_name", passenger.getFirstName());
+                passengerValues.put("last_name", passenger.getLastName());
+                passengerValues.put("gender", passenger.getGender());
+                passengerValues.put("date_of_birth", passenger.getDateOfBirth());
+                passengerValues.put("nationality", passenger.getNationality());
+                passengerValues.put("issue_country", passenger.getCountryOfIssue());
+                passengerValues.put("passport_number", passenger.getPassportNumber());
+                passengerValues.put("passport_expiry_date", passenger.getPassportExpiry());
+
+                db.insert("passenger", null, passengerValues);
+            }
+
+            db.setTransactionSuccessful();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public Cursor getBookings() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM booking", null);
+        return db.rawQuery("SELECT b.*, f.departure_airport, f.arrival_airport FROM booking b LEFT JOIN flight f ON b.flight_id = f.flight_id", null);
     }
 
-    public Cursor getPassengers() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM passenger", null);
-    }
 }
