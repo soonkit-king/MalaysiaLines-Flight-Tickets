@@ -196,14 +196,15 @@ public class CustomerDetailsFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1),
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -229,14 +230,15 @@ public class CustomerDetailsFragment extends Fragment {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
-                            passengerJson.getString("firstName"),
-                            passengerJson.getString("lastName"),
-                            passengerJson.getString("nationality"),
-                            passengerJson.getString("countryOfIssue"),
-                            passengerJson.getString("passportNumber"),
-                            passengerJson.getString("gender"),
-                            passengerJson.getString("dateOfBirth"),
-                            passengerJson.getString("passportExpiry")
+                            passengerJson.optInt("bookingId", -1),
+                            passengerJson.optString("firstName", ""),
+                            passengerJson.optString("lastName", ""),
+                            passengerJson.optString("nationality", ""),
+                            passengerJson.optString("countryOfIssue", ""),
+                            passengerJson.optString("passportNumber", ""),
+                            passengerJson.optString("gender", ""),
+                            passengerJson.optString("dateOfBirth", ""),
+                            passengerJson.optString("passportExpiry", "")
                     );
                     passengerList.add(passenger);
                 }
@@ -252,7 +254,7 @@ public class CustomerDetailsFragment extends Fragment {
 
 
             for (int i = 0; i < count; i++) {
-                passengerList.add(new Passenger("", "", "", "", "", "", "", ""));
+                passengerList.add(new Passenger(-1, "", "", "", "", "", "", "", ""));
             }
             passengerDetailAdapter = new PassengerDetailAdapter(passengerList);
             rvPassengerDetail.setAdapter(passengerDetailAdapter);

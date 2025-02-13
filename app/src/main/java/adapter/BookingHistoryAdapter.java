@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import model.Booking;
+import model.BookingHistory;
 import my.utem.ftmk.flightticketingsystem.R;
 
-public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingViewHolder> {
+public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAdapter.BookingViewHolder> {
 
-    private List<Booking> bookingList;
+    private List<BookingHistory> bookingList;
     private Context context;
 
-    public BookingAdapter(Context context, List<Booking> bookingList) {
+    public BookingHistoryAdapter(Context context, List<BookingHistory> bookingList) {
         this.context = context;
         this.bookingList = bookingList;
     }
@@ -33,7 +33,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
 
     @Override
     public void onBindViewHolder(@NonNull BookingViewHolder holder, int position) {
-        Booking booking = bookingList.get(position);
+        BookingHistory booking = bookingList.get(position);
 
         holder.tvBookingDepartureAirport.setText(booking.getDepartureAirport());
         holder.tvBookingArrivalAirport.setText(booking.getArrivalAirport());

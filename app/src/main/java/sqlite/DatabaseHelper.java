@@ -75,25 +75,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long initializeFlights(int flightId, int pax, String depDatetime, String arrDatetime, String seatNo, int refund, double payment) {
+    public Cursor getAllFlights() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM flight", null);
+    }
+
+    public Cursor getAllBookingHistory() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT b.*, f.departure_airport, f.arrival_airport FROM booking b LEFT JOIN flight f ON b.flight_id = f.flight_id", null);
+    }
+
+    public void insertFlight(String departureAirport, String arrivalAirport,
+                             String departureTime, String arrivalTime,
+                             String flightDuration, double priceRate) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("flight_id", flightId);
-        values.put("pax", pax);
-        values.put("departure_datetime", depDatetime);
-        values.put("arrival_datetime", arrDatetime);
-        values.put("seat_no", seatNo);
-        values.put("refund_guarantee", refund);
-        values.put("total_payment", payment);
 
-        return db.insert("booking", null, values);
+        values.put("departure_airport", departureAirport);
+        values.put("arrival_airport", arrivalAirport);
+        values.put("departure_time", departureTime);
+        values.put("arrival_time", arrivalTime);
+        values.put("flight_duration", flightDuration);
+        values.put("price_rate", priceRate);
+
+        // Insert the row and return the primary key value of the new row
+        long newRowId = db.insert("flight", null, values);
+
+        // Close the database connection
+        db.close();
     }
 
     public boolean insertCompleteBooking(
             int flightId,
             int pax,
-            String depDatetime,
-            String arrDatetime,
+            String departureDatetime,
+            String arrivalDatetime,
             String seatNo,
             int refund,
             double payment,
@@ -116,8 +132,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues bookingValues = new ContentValues();
             bookingValues.put("flight_id", flightId);
             bookingValues.put("pax", pax);
-            bookingValues.put("departure_datetime", depDatetime);
-            bookingValues.put("arrival_datetime", arrDatetime);
+            bookingValues.put("departure_datetime", departureDatetime);
+            bookingValues.put("arrival_datetime", arrivalDatetime);
             bookingValues.put("seat_no", seatNo);
             bookingValues.put("refund_guarantee", refund);
             bookingValues.put("total_payment", payment);
@@ -163,10 +179,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
-
-    public Cursor getBookings() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT b.*, f.departure_airport, f.arrival_airport FROM booking b LEFT JOIN flight f ON b.flight_id = f.flight_id", null);
-    }
-
 }

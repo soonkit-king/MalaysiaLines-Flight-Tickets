@@ -1,6 +1,5 @@
 package fragment;
 
-import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -8,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,83 +15,64 @@ import java.util.ArrayList; // Import ArrayList
 import java.util.List;
 
 import sqlite.DatabaseHelper;
-import adapter.BookingAdapter;
-import model.Booking;
+import adapter.BookingHistoryAdapter;
+import model.BookingHistory;
 import my.utem.ftmk.flightticketingsystem.R;
 
 public class BookingHistoryFragment extends Fragment {
 
-    private DatabaseHelper db;
-    private RecyclerView rvBooking;
-    private List<Booking> bookingList;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        db = new DatabaseHelper(getContext());
-    }
+    RecyclerView recyclerView;
+    BookingHistoryAdapter bookingHistoryAdapter;
+    private List<BookingHistory> bookingHistoryList;
+    DatabaseHelper dbHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_booking_history, container, false);
 
-        rvBooking = view.findViewById(R.id.rvBookings);
-        rvBooking.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.rvBookings);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        loadBookingHistory(); // Load booking history
+        loadAllBookingHistory();
 
-        // Set up the adapter after loading the booking history
-        BookingAdapter bookingAdapter = new BookingAdapter(getActivity(), bookingList);
-        rvBooking.setAdapter(bookingAdapter); // Use rvBooking instead of recyclerView
+        // Set Adapter
+        bookingHistoryAdapter = new BookingHistoryAdapter(getContext(), bookingHistoryList);
+        recyclerView.setAdapter(bookingHistoryAdapter);
 
         return view;
     }
 
-    private void loadBookingHistory() {
-        Cursor cursor = db.getBookings();
-        bookingList = new ArrayList<>(); // Initialize the bookingList
+    private void loadAllBookingHistory() {
+        bookingHistoryList = new ArrayList<>();
+        dbHelper = new DatabaseHelper(getContext());
+        Cursor cursor = dbHelper.getAllBookingHistory();
 
-        if (cursor != null) {
-            // Print out the column names for debugging
-            String[] columnNames = cursor.getColumnNames();
-            for (String columnName : columnNames) {
-                Log.d("BookingHistory", "Column: " + columnName);
-            }
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int bookingId = cursor.getInt(cursor.getColumnIndexOrThrow("booking_id"));
+                String departureAirport = cursor.getString(cursor.getColumnIndexOrThrow("departure_airport"));
+                String arrivalAirport = cursor.getString(cursor.getColumnIndexOrThrow("arrival_airport"));
+                String departureDatetime = cursor.getString(cursor.getColumnIndexOrThrow("departure_datetime"));
+                String arrivalDatetime = cursor.getString(cursor.getColumnIndexOrThrow("arrival_datetime"));
+                String seatNo = cursor.getString(cursor.getColumnIndexOrThrow("seat_no"));
+                boolean hasRefundGuarantee = cursor.getInt(cursor.getColumnIndexOrThrow("refund_guarantee")) == 1;
+                int pax = cursor.getInt(cursor.getColumnIndexOrThrow("pax"));
+                double totalPayment = cursor.getDouble(cursor.getColumnIndexOrThrow("total_payment"));
 
-            if (cursor.moveToFirst()) {
-                do {
-                    // Extract data from the cursor
-                    @SuppressLint("Range") String departureDatetime = cursor.getString(cursor.getColumnIndex("departure_datetime")); // Correct column name
-                    @SuppressLint("Range") String arrivalDatetime = cursor.getString(cursor.getColumnIndex("arrival_datetime")); // Correct column name
-                    @SuppressLint("Range") String seatNo = cursor.getString(cursor.getColumnIndex("seat_no")); // Correct column name
-                    @SuppressLint("Range") boolean hasRefundGuarantee = cursor.getInt(cursor.getColumnIndex("refund_guarantee")) > 0; // Correct column name
-                    @SuppressLint("Range") int pax = cursor.getInt(cursor.getColumnIndex("pax")); // Correct column name
-                    @SuppressLint("Range") double totalPayment = cursor.getDouble(cursor.getColumnIndex("total_payment")); // Correct column name
+                // Create BookingHistory object
+                BookingHistory booking = new BookingHistory(bookingId, departureAirport, arrivalAirport, departureDatetime, arrivalDatetime, seatNo, hasRefundGuarantee, pax, totalPayment);
+                bookingHistoryList.add(booking);
+            } while (cursor.moveToNext());
 
-                    // Check if any column index is -1
-                    if (departureDatetime == null || arrivalDatetime == null || seatNo == null) {
-                        Log.e("BookingHistory", "One of the required fields is null");
-                        continue; // Skip this entry if any required field is null
-                    }
+            cursor.close();
+        }
 
-                    // Create a new Booking object
-                    @SuppressLint("Range") Booking booking = new Booking(
-                            cursor.getString(cursor.getColumnIndex("departure_airport")), // You may need to join with flight table to get this
-                            cursor.getString(cursor.getColumnIndex("arrival_airport")), // You may need to join with flight table to get this
-                            departureDatetime,
-                            arrivalDatetime,
-                            seatNo,
-                            hasRefundGuarantee,
-                            pax,
-                            totalPayment
-                    );
-                    bookingList.add(booking);
-                } while (cursor.moveToNext());
-
-                cursor.close(); // Close the cursor after use
-            }
+        // Notify adapter if initialized
+        if (bookingHistoryAdapter != null) {
+            bookingHistoryAdapter.notifyDataSetChanged();
         }
     }
+
 }
