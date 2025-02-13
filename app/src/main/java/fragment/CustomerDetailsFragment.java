@@ -48,9 +48,6 @@ public class CustomerDetailsFragment extends Fragment {
     private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
     private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
 
-    private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
-    private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
-
     private List<Passenger> passengerList = new ArrayList<>();
     private int pax = 1; // Default value
     private TextView first_name, last_name, email, country_residence, phone_number;
