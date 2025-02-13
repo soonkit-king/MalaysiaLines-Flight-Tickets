@@ -3,7 +3,6 @@ package my.utem.ftmk.flightticketingsystem;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -30,5 +29,14 @@ public class BookingSuccessActivity extends AppCompatActivity {
 finish();
         });
 
+        //insertCompleteBooking func
     }
+
+    @Override
+    public void onBackPressed() {
+        // Do nothing when back button is pressed
+        // This disables the back button
+        super.onBackPressed();
+    }
+
 }
