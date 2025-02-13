@@ -142,6 +142,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject passengerJson = jsonArray.getJSONObject(i);
                     Passenger passenger = new Passenger(
+                            passengerJson.getInt("bookingId"),
                             passengerJson.getString("firstName"),
                             passengerJson.getString("lastName"),
                             passengerJson.getString("nationality"),
