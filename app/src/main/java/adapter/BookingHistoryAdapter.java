@@ -37,7 +37,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         holder.tvBookingDepartureAirport.setText(booking.getDepartureAirport());
         holder.tvBookingArrivalAirport.setText(booking.getArrivalAirport());
-        holder.tvPax.setText(String.valueOf(booking.getPax()));
+        holder.tvPax.setText(booking.getPax() + " pax");
         holder.tvDepartureDatetime.setText(String.valueOf(booking.getDepartureDatetime()));
         holder.tvArrivalDatetime.setText(String.valueOf(booking.getArrivalDatetime()));
         holder.tvSeatNo.setText(booking.getSeatNo());
