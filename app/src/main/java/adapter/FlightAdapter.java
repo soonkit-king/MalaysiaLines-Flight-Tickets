@@ -106,7 +106,6 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
         final String[] selectedDate = {""}; // Store selected date
         dateButton.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
-
             DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                     (view, year, month, dayOfMonth) -> {
                         selectedDate[0] = Conversions.formatDate(dayOfMonth, month, year); // Convert to DD MMM YYYY
@@ -115,13 +114,8 @@ public class FlightAdapter extends RecyclerView.Adapter<FlightAdapter.FlightView
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH));
-
-            // Prevent past dates
-            datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-
             datePickerDialog.show();
         });
-
 
         // Handle Confirm Button
         AlertDialog dialog = builder.create();
