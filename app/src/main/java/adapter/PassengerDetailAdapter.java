@@ -1,5 +1,6 @@
 package adapter;
 
+import android.text.TextUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -35,118 +36,7 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Passenger passenger = passengerList.get(position);
-
-        // Set passenger title
-        holder.passengerTitle.setText("Passenger " + (position + 1) + ":");
-
-        // Set passenger details
-
-        holder.firstName.setText(passenger.getFirstName());
-        holder.lastName.setText(passenger.getLastName());
-        holder.nationality.setText(passenger.getNationality());
-        holder.countryOfIssue.setText(passenger.getCountryOfIssue());
-        holder.passportNumber.setText(passenger.getPassportNumber());
-        holder.dobDay.setText(passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3 ? passenger.getDateOfBirth().split("/")[0] : "");
-        holder.dobMonth.setText(passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3 ? passenger.getDateOfBirth().split("/")[1] : "");
-        holder.dobYear.setText(passenger.getDateOfBirth() != null && passenger.getDateOfBirth().split("/").length == 3 ? passenger.getDateOfBirth().split("/")[2] : "");
-        holder.expiryDay.setText(passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3 ? passenger.getPassportExpiry().split("/")[0] : "");
-        holder.expiryMonth.setText(passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3 ? passenger.getPassportExpiry().split("/")[1] : "");
-        holder.expiryYear.setText(passenger.getPassportExpiry() != null && passenger.getPassportExpiry().split("/").length == 3 ? passenger.getPassportExpiry().split("/")[2] : "");
-
-        // Set gender selection
-        if (passenger.getGender() != null) {
-            if (passenger.getGender().equalsIgnoreCase("Male")) {
-                holder.radioMale.setChecked(true);
-            } else if (passenger.getGender().equalsIgnoreCase("Female")) {
-                holder.radioFemale.setChecked(true);
-            } else {
-                holder.genderGroup.clearCheck(); // Clear selection if gender is not Male or Female
-            }
-        } else {
-            holder.genderGroup.clearCheck(); // Clear selection if gender is null
-        }
-
-        // Clear previous listeners to avoid issues with RecyclerView reuse
-        clearTextWatchers(holder);
-
-        // Set up text watchers for live updates
-        holder.firstNameWatcher = new MyTextWatcher(passenger, "firstName");
-        holder.firstName.addTextChangedListener(holder.firstNameWatcher);
-
-        holder.lastNameWatcher = new MyTextWatcher(passenger, "lastName");
-        holder.lastName.addTextChangedListener(holder.lastNameWatcher);
-
-        holder.nationalityWatcher = new MyTextWatcher(passenger, "nationality");
-        holder.nationality.addTextChangedListener(holder.nationalityWatcher);
-
-        holder.countryOfIssueWatcher = new MyTextWatcher(passenger, "countryOfIssue");
-        holder.countryOfIssue.addTextChangedListener(holder.countryOfIssueWatcher);
-
-        holder.passportNumberWatcher = new MyTextWatcher(passenger, "passportNumber");
-        holder.passportNumber.addTextChangedListener(holder.passportNumberWatcher);
-
-        holder.dobDayWatcher = new MyTextWatcher(passenger, "dobDay");
-        holder.dobDay.addTextChangedListener(holder.dobDayWatcher);
-
-        holder.dobMonthWatcher = new MyTextWatcher(passenger, "dobMonth");
-        holder.dobMonth.addTextChangedListener(holder.dobMonthWatcher);
-
-        holder.dobYearWatcher = new MyTextWatcher(passenger, "dobYear");
-        holder.dobYear.addTextChangedListener(holder.dobYearWatcher);
-
-        holder.expiryDayWatcher = new MyTextWatcher(passenger, "expiryDay");
-        holder.expiryDay.addTextChangedListener(holder.expiryDayWatcher);
-
-        holder.expiryMonthWatcher = new MyTextWatcher(passenger, "expiryMonth");
-        holder.expiryMonth.addTextChangedListener(holder.expiryMonthWatcher);
-
-        holder.expiryYearWatcher = new MyTextWatcher(passenger, "expiryYear");
-        holder.expiryYear.addTextChangedListener(holder.expiryYearWatcher);
-
-        // Set up radio group listener for gender selection
-        holder.genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.radioMale) {
-                passenger.setGender("Male");
-            } else if (checkedId == R.id.radioFemale) {
-                passenger.setGender("Female");
-            }
-        });
-    }
-
-    private void clearTextWatchers(ViewHolder holder) {
-        if (holder.firstNameWatcher != null) {
-            holder.firstName.removeTextChangedListener(holder.firstNameWatcher);
-        }
-        if (holder.lastNameWatcher != null) {
-            holder.lastName.removeTextChangedListener(holder.lastNameWatcher);
-        }
-        if (holder.nationalityWatcher != null) {
-            holder.nationality.removeTextChangedListener(holder.nationalityWatcher);
-        }
-        if (holder.countryOfIssueWatcher != null) {
-            holder.countryOfIssue.removeTextChangedListener(holder.countryOfIssueWatcher);
-        }
-        if (holder.passportNumberWatcher != null) {
-            holder.passportNumber.removeTextChangedListener(holder.passportNumberWatcher);
-        }
-        if (holder.dobDayWatcher != null) {
-            holder.dobDay.removeTextChangedListener(holder.dobDayWatcher);
-        }
-        if (holder.dobMonthWatcher != null) {
-            holder.dobMonth.removeTextChangedListener(holder.dobMonthWatcher);
-        }
-        if (holder.dobYearWatcher != null) {
-            holder.dobYear.removeTextChangedListener(holder.dobYearWatcher);
-        }
-        if (holder.expiryDayWatcher != null) {
-            holder.expiryDay.removeTextChangedListener(holder.expiryDayWatcher);
-        }
-        if (holder.expiryMonthWatcher != null) {
-            holder.expiryMonth.removeTextChangedListener(holder.expiryMonthWatcher);
-        }
-        if (holder.expiryYearWatcher != null) {
-            holder.expiryYear.removeTextChangedListener(holder.expiryYearWatcher);
-        }
+        holder.bindPassenger(passenger);
     }
 
     @Override
@@ -155,7 +45,7 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView passengerTitle;
+        TextView passengerTitle, first_name_error, last_name_error,  passport_error,nationality_error,countryOfIssue_error;
         RadioGroup genderGroup;
         RadioButton radioMale, radioFemale;
         EditText firstName, lastName, dobDay, dobMonth, dobYear;
@@ -182,6 +72,88 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
             expiryDay = itemView.findViewById(R.id.expiryDay);
             expiryMonth = itemView.findViewById(R.id.expiryMonth);
             expiryYear = itemView.findViewById(R.id.expiryYear);
+
+            // Error TextViews for Validation
+            first_name_error = itemView.findViewById(R.id.first_name_error);
+            last_name_error = itemView.findViewById(R.id.last_name_error);
+            nationality_error = itemView.findViewById(R.id.nationality_error);
+            passport_error = itemView.findViewById(R.id.passport_error);
+            countryOfIssue_error= itemView.findViewById(R.id.countryOfIssue_error);
+        }
+
+        public void bindPassenger(Passenger passenger) {
+            passengerTitle.setText("Passenger " + (getAdapterPosition() + 1) + ":");
+
+            firstName.setText(passenger.getFirstName());
+            lastName.setText(passenger.getLastName());
+            nationality.setText(passenger.getNationality());
+            countryOfIssue.setText(passenger.getCountryOfIssue());
+            passportNumber.setText(passenger.getPassportNumber());
+
+            if (passenger.getGender().equalsIgnoreCase("Male")) {
+                radioMale.setChecked(true);
+            } else if (passenger.getGender().equalsIgnoreCase("Female")) {
+                radioFemale.setChecked(true);
+            }
+
+            String[] dobParts = passenger.getDateOfBirth().split("/");
+            if (dobParts.length == 3) {
+                dobDay.setText(dobParts[0]);
+                dobMonth.setText(dobParts[1]);
+                dobYear.setText(dobParts[2]);
+            }
+
+            String[] expiryParts = passenger.getPassportExpiry().split("/");
+            if (expiryParts.length == 3) {
+                expiryDay.setText(expiryParts[0]);
+                expiryMonth.setText(expiryParts[1]);
+                expiryYear.setText(expiryParts[2]);
+            }
+        }
+
+        public boolean validatePassenger() {
+            boolean isValid = true;
+
+            if (TextUtils.isEmpty(firstName.getText().toString().trim())) {
+                first_name_error.setText("*Required field");
+                first_name_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                first_name_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(lastName.getText().toString().trim())) {
+                last_name_error.setText("*Required field");
+                last_name_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                last_name_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(nationality.getText().toString().trim())) {
+                nationality_error.setText("*Required field");
+                nationality_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                nationality_error.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(passportNumber.getText().toString().trim())) {
+                passport_error.setText("*Required field");
+                passport_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                passport_error.setVisibility(View.GONE);
+            }
+            if (TextUtils.isEmpty(countryOfIssue_error.getText().toString().trim())) {
+                countryOfIssue_error.setText("*Required field");
+                countryOfIssue_error.setVisibility(View.VISIBLE);
+                isValid = false;
+            } else {
+                countryOfIssue_error.setVisibility(View.GONE);
+            }
+
+            return isValid;
         }
     }
 
@@ -250,6 +222,21 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
             return null;
         }
 
+    public boolean validateAllPassengers(RecyclerView recyclerView) {
+        boolean allValid = true;
+        for (int i = 0; i < getItemCount(); i++) {
+            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(i);
+            if (viewHolder instanceof ViewHolder) {
+                if (!((ViewHolder) viewHolder).validatePassenger()) {
+                    allValid = false;
+                }
+            }
+        }
+        return allValid;
+    }
+
+}
+
         private String getFieldValue(Passenger passenger, String field) {
             switch (field) {
                 case "dobDay":
@@ -269,4 +256,3 @@ public class PassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetail
             }
         }
     }
-}

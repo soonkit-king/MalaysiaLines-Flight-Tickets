@@ -85,6 +85,16 @@
             android:inputType="textPersonName"
             android:layout_marginTop="16dp" />
 
+        <TextView
+            android:id="@+id/first_name_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Required field"
+            android:textSize="12sp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
         <!-- Last Name -->
         <EditText
             android:id="@+id/lastName"
@@ -94,6 +104,16 @@
             android:textSize="16sp"
             android:inputType="textPersonName"
             android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/last_name_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Required field"
+            android:textSize="12sp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
 
         <!-- Date of Birth -->
         <TextView
@@ -151,6 +171,16 @@
             android:textSize="16sp"
             android:layout_marginTop="16dp" />
 
+        <TextView
+            android:id="@+id/nationality_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Required field"
+            android:textSize="12sp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
         <!-- Country/Region of Issue -->
         <EditText
             android:id="@+id/countryOfIssue"
@@ -160,6 +190,16 @@
             android:inputType="text"
             android:textSize="16sp"
             android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/countryOfIssue_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Required field"
+            android:textSize="12sp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
 
         <!-- Passport Number -->
         <EditText
@@ -180,6 +220,16 @@
             android:layout_marginTop="16dp"
             android:textColor="@color/black"
             android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/passport_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Required field"
+            android:textSize="12sp"
+            android:textColor="#FF0000"
+            android:visibility="gone"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
