@@ -125,7 +125,7 @@ public class PaymentValidationActivity extends AppCompatActivity {
         String departureDatetime = sharedPreferences.getString(PrefKey.KEY_DEPARTURE_DATETIME, "");
         String arrivalDatetime = sharedPreferences.getString(PrefKey.KEY_ARRIVAL_DATETIME, "");
         Set<String> seatNo = sharedPreferences.getStringSet(PrefKey.KEY_SELECTED_SEATS, new HashSet<>());
-        String seatNoString = TextUtils.join(",", seatNo);
+        String seatNoString = TextUtils.join(", ", seatNo);
         boolean refund = sharedPreferences.getBoolean(PrefKey.KEY_REFUND_GUARANTEE, false);
         double totalPayment = sharedPreferences.getFloat(PrefKey.KEY_TOTAL_PAYMENT, -1);
 
