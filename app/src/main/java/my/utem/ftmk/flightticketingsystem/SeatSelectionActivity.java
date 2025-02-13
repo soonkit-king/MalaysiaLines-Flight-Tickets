@@ -3,6 +3,7 @@ package my.utem.ftmk.flightticketingsystem;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,11 +16,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fragment.AddOnsFragment;
 import sqlite.DatabaseHelper;
 import utils.PrefKey;
 
@@ -33,6 +34,7 @@ public class SeatSelectionActivity extends AppCompatActivity {
     private Set<String> previouslySelectedSeats = new HashSet<>(); // Store previously selected seats
     private int maxSeatsToSelect; // The maximum number of seats to select
     private int seatsAvailable;
+    private LinearLayout seatContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,28 @@ public class SeatSelectionActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         Set<String> bookedSeats = dbHelper.getBookedSeats(flightId, departureDatetime);
 
-        LinearLayout seatContainer = findViewById(R.id.seatContainer);
+        seatContainer = findViewById(R.id.seatContainer);
+        // Add column headers (A, B, C, D, E, F) above the first row
+        LinearLayout headerRowTop = new LinearLayout(this);
+        headerRowTop.setOrientation(LinearLayout.HORIZONTAL);
+        headerRowTop.setGravity(Gravity.CENTER);
+        headerRowTop.setPadding(0, 0, 20, 0); // Adjust padding as needed
+
+        // Create header labels
+        headerRowTop.addView(createHeaderTextView("A "));
+        headerRowTop.addView(createHeaderTextView("B "));
+        headerRowTop.addView(createHeaderTextView("C "));
+
+        View spacerHeader = new View(this);
+        LinearLayout.LayoutParams spacerParamsHeader = new LinearLayout.LayoutParams(165, LinearLayout.LayoutParams.MATCH_PARENT);
+        headerRowTop.addView(spacerHeader, spacerParamsHeader);
+
+        headerRowTop.addView(createHeaderTextView(" D"));
+        headerRowTop.addView(createHeaderTextView(" E"));
+        headerRowTop.addView(createHeaderTextView(" F"));
+
+
+
         LinearLayout rowLayouta = new LinearLayout(this);
         rowLayouta.setOrientation(LinearLayout.HORIZONTAL);
         rowLayouta.setGravity(Gravity.CENTER);
@@ -67,11 +90,13 @@ public class SeatSelectionActivity extends AppCompatActivity {
         rowLayouta.addView(exitR);
         seatContainer.addView(rowLayouta);
 
+        seatContainer.addView(headerRowTop);
+
         for (int i = 0; i < rows; i++) {
             LinearLayout rowLayout = new LinearLayout(this);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
             rowLayout.setGravity(Gravity.CENTER);
-            rowLayout.setPadding(0, 16, 0, 16);
+            rowLayout.setPadding(0, 12, 20, 16);
 
             // Seat count per row
             char seatLetter = 'A'; // Start with seat A
@@ -127,6 +152,27 @@ public class SeatSelectionActivity extends AppCompatActivity {
         rowLayouta.addView(exitL);
         rowLayouta.addView(space, spaceParams);
         rowLayouta.addView(exitR);
+
+        // Add column headers (A, B, C, D, E, F) below the last row
+        LinearLayout headerRowBottom = new LinearLayout(this);
+        headerRowBottom.setOrientation(LinearLayout.HORIZONTAL);
+        headerRowBottom.setGravity(Gravity.CENTER);
+        headerRowBottom.setPadding(0, 0, 18, 0); // Adjust padding as needed
+
+        // Create header labels
+        headerRowBottom.addView(createHeaderTextView("A "));
+        headerRowBottom.addView(createHeaderTextView("B "));
+        headerRowBottom.addView(createHeaderTextView("C "));
+
+        spacerHeader = new View(this);
+        spacerParamsHeader = new LinearLayout.LayoutParams(185, LinearLayout.LayoutParams.MATCH_PARENT);
+        headerRowBottom.addView(spacerHeader, spacerParamsHeader);
+
+        headerRowBottom.addView(createHeaderTextView(" D"));
+        headerRowBottom.addView(createHeaderTextView(" E"));
+        headerRowBottom.addView(createHeaderTextView(" F"));
+
+        seatContainer.addView(headerRowBottom);
         seatContainer.addView(rowLayouta);
 
         btnBackToAddOns = findViewById(R.id.btnBackToAddOns);
@@ -208,5 +254,16 @@ public class SeatSelectionActivity extends AppCompatActivity {
         }
 
         return seat;
+    }
+
+    private TextView createHeaderTextView(String text) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+        textView.setTextSize(20);
+        textView.setGravity(Gravity.CENTER); // Center the text
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(88, LinearLayout.LayoutParams.WRAP_CONTENT); // Match seat width
+        params.setMargins(0, 0, 0, 0);
+        textView.setLayoutParams(params);
+        return textView;
     }
 }
