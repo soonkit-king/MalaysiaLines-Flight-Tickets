@@ -1,6 +1,6 @@
 package my.utem.ftmk.flightticketingsystem;
 
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,15 +32,17 @@ public class BookingActivity extends AppCompatActivity {
     private Button btnNext;
     private ImageButton btnCloseOrBack;
     private TextView tvBookingSectionName, tvDepartureAirport, tvArrivalAirport, tvDepartureDatetime, tvArrivalDatetime, tvTotalPayment, tvPax;
-
     private FragmentManager fragmentManager;
-
     private SharedPreferences sharedPreferences;
+    private CustomerDetailsFragment customerDetailsFragment;  // Fragment reference
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
+        customerDetailsFragment = new CustomerDetailsFragment();
+
 
         fragmentManager = getSupportFragmentManager();
         btnNext = findViewById(R.id.next_button);

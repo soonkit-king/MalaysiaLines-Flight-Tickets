@@ -3,10 +3,12 @@ package fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,7 +45,11 @@ public class CustomerDetailsFragment extends Fragment {
     private Spinner countryCodeSpinner;
     private final List<String> countryCodes = new ArrayList<>();
 
-    private final List<Passenger> passengerList = new ArrayList<>();
+    private EditText firstNameEditText, lastNameEditText, emailEditText, countryResidenceEditText, phoneNumberEditText;
+    private TextView firstNameErrorTextView, lastNameErrorTextView, emailErrorTextView, phoneNumberErrorTextView;
+
+    private List<Passenger> passengerList = new ArrayList<>();
+    private int pax = 1; // Default value
     private TextView first_name, last_name, email, country_residence, phone_number;
 
     private SharedPreferences sharedPreferences;
@@ -63,11 +69,17 @@ public class CustomerDetailsFragment extends Fragment {
 
         rvPassengerDetail = view.findViewById(R.id.rvPassengerDetail);
         countryCodeSpinner = view.findViewById(R.id.country_code);
-        first_name = view.findViewById(R.id.first_name);
-        last_name = view.findViewById(R.id.last_name);
-        email = view.findViewById(R.id.email);
-        country_residence = view.findViewById(R.id.country_residence);
-        phone_number = view.findViewById(R.id.phone_number);
+        firstNameEditText = view.findViewById(R.id.first_name);
+        lastNameEditText = view.findViewById(R.id.last_name);
+        emailEditText = view.findViewById(R.id.email);
+        countryResidenceEditText = view.findViewById(R.id.country_residence);
+        phoneNumberEditText = view.findViewById(R.id.phone_number);
+        firstNameErrorTextView = view.findViewById(R.id.first_name_error);
+        lastNameErrorTextView = view.findViewById(R.id.last_name_error);
+        emailErrorTextView =view.findViewById(R.id.email_error);
+        phoneNumberErrorTextView = view.findViewById(R.id.phone_number_error);
+
+
         rvPassengerDetail.setLayoutManager(new LinearLayoutManager(getContext()));
 
         sharedPreferences = getActivity().getSharedPreferences(PrefKey.PREF_BOOKING, Context.MODE_PRIVATE);
@@ -314,6 +326,44 @@ public class CustomerDetailsFragment extends Fragment {
         countryCodeSpinner.setAdapter(adapter);
     }
 
+    public boolean validateForm() {
+        boolean isValid = true;
+
+        if (TextUtils.isEmpty(firstNameEditText.getText().toString())) {
+            firstNameErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            firstNameErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(lastNameEditText.getText().toString())) {
+            lastNameErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            lastNameErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(emailEditText.getText().toString())) {
+            emailErrorTextView.setText("*Required field");
+            emailErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches()) {
+            emailErrorTextView.setText("Invalid email format");
+            emailErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            emailErrorTextView.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(phoneNumberEditText.getText().toString())) {
+            phoneNumberErrorTextView.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            phoneNumberErrorTextView.setVisibility(View.GONE);
+        }
+
+        return isValid;
+    }
     // Save country codes to SharedPreferences
     private void saveCountryCodesToSharedPreferences() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
