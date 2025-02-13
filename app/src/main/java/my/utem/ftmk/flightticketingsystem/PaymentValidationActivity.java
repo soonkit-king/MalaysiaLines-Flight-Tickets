@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
