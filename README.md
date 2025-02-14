@@ -1,19 +1,31 @@
-SEMESTER 1, SESSION 2024/2025 <br>
-BITP 3453 MOBILE APPLICATION DEVELOPMENT <br>
-PROJECT ASSIGNMENT REPORT <br>
---------------------------------------------------------------------------
-B032310196	KING SOON KIT <br>
-B032310217  MUHAMMAD ZULHELMI BIN NOOR AFENDI <br>
-B032310136	NURLIYANA ATHIRAH BINTI ROSLI <br>
-B032310093	SHARON ELYIA ANAK LAYANG <br>
-B032310206	MUHAMMAD ZULHUSNI BIN MUHAMMAD ZAIMI <br>
---------------------------------------------------------------------------
-Project Title: 
-MalaysiaLines Flight Tickets
+# **MalaysiaLines Flight Tickets**  
+**BITP 3453 - Mobile Application Development**  
+**Semester 1, Session 2024/2025**  
 
-This project is a flight ticket booking system for MalaysiaLines. It allows users to browse available flights, make bookings based on the number of passengers, and store booking details. Users can also view their booking history and retrieve saved flight information for future reference. The system ensures a seamless and user-friendly experience for managing flight reservations efficiently.
+## 📌 Project Assignment Report  
 
+### 👥 Team Members  
 
+| Matric Number  | Name                                      |
+|---------------|-------------------------------------------|
+| B032310196    | KING SOON KIT                             |
+| B032310217    | MUHAMMAD ZULHELMI BIN NOOR AFENDI        |
+| B032310136    | NURLIYANA ATHIRAH BINTI ROSLI           |
+| B032310093    | SHARON ELYIA ANAK LAYANG                |
+| B032310206    | MUHAMMAD ZULHUSNI BIN MUHAMMAD ZAIMI    |
 
+---
 
+## ✈️ **Project Title: MalaysiaLines Flight Tickets**  
 
+### 📝 **Project Overview**  
+MalaysiaLines Flight Tickets is a **user-friendly flight booking system** designed to streamline the ticket reservation process. Our system enables users to:  
+✅ **Browse available flights** stored in a local database  
+✅ **Make bookings** based on passenger count  
+✅ **Store and retrieve booking details** locally  
+✅ **Access booking history** for easy management  
+
+This application ensures a smooth and efficient experience for travelers looking to book flights conveniently.  
+
+🔹 **Tech Stack:** *Java (Android Studio), SQLite (Local Database)*  
+🔹 **Key Features:** *seat-selection funtionality, optimize UI, efficient booking system*  
