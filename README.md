@@ -24,6 +24,8 @@ MalaysiaLines Flight Tickets is a **user-friendly flight booking system** design
 ✅ **Make bookings** based on passenger count  
 ✅ **Store and retrieve booking details** locally  
 ✅ **Access booking history** for easy management  
+✅ **Using SharePrefs** to transfer data around the Activity and Fragment
+✅ **Call API** from internet to get all Country Code Phone Number
 
 This application ensures a smooth and efficient experience for travelers looking to book flights conveniently.  
 
